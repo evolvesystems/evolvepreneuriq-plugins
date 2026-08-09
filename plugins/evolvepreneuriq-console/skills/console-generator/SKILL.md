@@ -1,6 +1,6 @@
 ---
 name: console-generator
-description: Build or rebuild the Evolvepreneur iQ Console — the branded, connector-driven launcher dashboard for John North's businesses (Workflows, Cowork Skills, EIQ Connector tools, and the EIQ persona library). Use whenever the user says "open my console", "rebuild my console", "regenerate the Evolvepreneur console", "show my iQ dashboard", "add an action/card to my console", or asks to refresh it from live EIQ data. Delivers the console as an HTML file and persists it as a Cowork artifact.
+description: Build or rebuild the Evolvepreneur®iQ Workplace — the white-label, connector-driven AI operator console (Workflows, Cowork Skills, all EIQ Connector tools, and the EIQ persona library), personalised to whichever businesses are connected. Use whenever the user says "open my console", "rebuild my console", "regenerate the Evolvepreneur console", "show my iQ dashboard", "add an action/card to my console", or asks to refresh it from live EIQ data. Delivers the console as an HTML file and persists it as a Cowork artifact.
 ---
 
 # Console Generator
@@ -20,7 +20,11 @@ A brand filter (one chip per active business) sits over the Workflows and Person
 
 ## Steps
 
-1. **Start from the template.** Read `references/console-template.html` — it is the current, working console with all data, styling, the Evolvepreneur iQ SVG logo, and the blue→indigo→magenta palette baked in. This is the baseline you deliver unless the user asked for a change or a live refresh.
+1. **Start from the template.** Read `references/console-template.html` — the current white-label console (two-panel Workplace layout, the Evolvepreneur®iQ app icon, the blue→indigo→magenta palette, all four tabs, and the 84-tool EIQ Connector catalogue). It is generic by design: **all per-client values live in one `CONFIG` block at the top of the script.** Set them from what setup gathered / what the connectors report:
+   - `ownerName` — the person's first name, for the greeting ("Hello, Tony"). Read it from the connected user.
+   - `businessName` — the primary/active business (shown as the operator identity).
+   - `businesses` — one entry per connected EIQ tenant (drives the switcher and every command's Business field).
+   Do not hardcode client data anywhere else; the rest of the template stays generic.
 
 2. **Refresh from live EIQ data when asked** (or when the user wants it current). The console is connector-driven — regenerate its dynamic data from whatever EIQ connectors are attached:
    - Enumerate the connected EIQ tenants (one MCP server per business).
