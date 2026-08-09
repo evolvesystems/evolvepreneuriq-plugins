@@ -8,7 +8,8 @@
     {
       "name": "evolvepreneuriq-console",
       "source": "./plugins/evolvepreneuriq-console",
-      "description": "The Evolvepreneur iQ Console — a branded, connector-driven launcher for your businesses, plus first-run setup that provisions your standing automations."
+      "version": "0.2.0",
+      "description": "Evolvepreneur®iQ Workplace (v0.2.0) — a white-label, connector-driven AI operator console. Builds a two-panel dashboard (Workflows, Cowork Skills, all EIQ Connector tools, and the EIQ persona library) personalised to each client's connected businesses, with dark mode and first-run setup for standing automations."
     }
   ]
 }
