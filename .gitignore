@@ -1,0 +1,19 @@
+# OS / build
+.DS_Store
+*.log
+node_modules/
+
+# SECRETS — never commit these
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+*.token
+token.txt
+credentials.json
+secrets.*
+*.secret
+.mcp.local.json
