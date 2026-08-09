@@ -1,0 +1,10 @@
+{
+  "name": "evolvepreneuriq-console",
+  "version": "0.1.0",
+  "description": "The Evolvepreneur iQ Console — a branded, connector-driven launcher for John North's businesses. Regenerates the console (Workflows, Cowork Skills, EIQ Connector tools and the EIQ persona library) and sets up standing automations like the morning brief.",
+  "author": {
+    "name": "Evolve Systems Group"
+  },
+  "homepage": "https://evolvepreneuriq.com",
+  "keywords": ["evolvepreneur", "evolvepreneuriq", "eiq", "console", "dashboard", "launcher", "cowork"]
+}
