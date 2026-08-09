@@ -1,0 +1,14 @@
+{
+  "name": "evolvepreneuriq",
+  "owner": {
+    "name": "Evolve Systems Group",
+    "email": "john.north@evolvesys.com.au"
+  },
+  "plugins": [
+    {
+      "name": "evolvepreneuriq-console",
+      "source": "./plugins/evolvepreneuriq-console",
+      "description": "The Evolvepreneur iQ Console — a branded, connector-driven launcher for your businesses, plus first-run setup that provisions your standing automations."
+    }
+  ]
+}
