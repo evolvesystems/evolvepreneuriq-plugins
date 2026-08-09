@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evolvepreneur®iQ — AI General Manager Console</title>
+<style>
+  :root{
+    --bg:#0a0d13; --panel:#121724; --panel2:#0f1420; --line:#242e40;
+    --ink:#e9edf5; --muted:#8b98af; --faint:#5d6a82;
+    --ep:#6366f1; --esg:#f59e0b; --gmb:#10b981; --hln:#06b6d4; --lab:#a855f7; --all:#7c8aa5;
+    --accent:#7dd3fc;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:radial-gradient(1200px 700px at 15% -10%,#16203a 0%,transparent 55%),
+               radial-gradient(1000px 600px at 100% 0%,#1a1330 0%,transparent 50%),
+               var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh; line-height:1.5;
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:28px 22px 80px}
+  header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:6px}
+  .brandmark{display:flex;align-items:center;gap:12px}
+  .logo{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+        overflow:hidden;box-shadow:0 6px 22px rgba(109,40,217,.4)}
+  .logo svg{width:42px;height:42px;display:block}
+  h1{font-size:23px;margin:0;letter-spacing:-.02em;font-weight:800}
+  .wordmark .reg{font-size:9px;vertical-align:super;color:var(--muted);font-weight:600;margin:0 1px}
+  .wordmark .iq{background:linear-gradient(135deg,#19a9f2,#e0189e);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .gm{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+      color:#22d3ee;border:1px solid #164e63;background:#0a2430;border-radius:6px;padding:2px 7px;margin-left:2px;vertical-align:middle}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .stat{color:var(--faint);font-size:12px;text-align:right}
+  .stat b{color:var(--ink)}
+
+  .controls{position:sticky;top:0;z-index:30;background:linear-gradient(180deg,rgba(10,13,19,.96),rgba(10,13,19,.86));
+            backdrop-filter:blur(8px);padding:14px 0 12px;margin:18px 0 8px;border-bottom:1px solid var(--line)}
+  .searchrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .search{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;background:var(--panel);
+          border:1px solid var(--line);border-radius:10px;padding:9px 12px}
+  .search input{flex:1;background:transparent;border:0;color:var(--ink);font-size:14px;outline:none}
+  .search svg{opacity:.6}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .chip{cursor:pointer;user-select:none;border:1px solid var(--line);background:var(--panel);
+        color:var(--muted);padding:6px 13px;border-radius:999px;font-size:12.5px;font-weight:600;
+        display:flex;align-items:center;gap:7px;transition:.15s}
+  .chip .dot{width:8px;height:8px;border-radius:50%}
+  .chip:hover{color:var(--ink);border-color:#38455e}
+  .chip.active{color:#fff;background:#1c2436;border-color:#3a4a6b}
+  .chip.active[data-brand="all"]{box-shadow:inset 0 0 0 1px var(--all)}
+
+  .segrow{margin-top:12px}
+  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+  .segbtn{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:13px;padding:7px 16px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:7px}
+  .segbtn:hover{color:var(--ink)}
+  .segbtn.active{background:#1c2436;color:#fff;box-shadow:inset 0 0 0 1px #3a4a6b}
+  .segn{font-size:11px;background:#0a2430;color:#22d3ee;border-radius:6px;padding:1px 6px}
+
+  .hero{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+    background:linear-gradient(120deg,rgba(23,176,243,.16),rgba(106,36,200,.13) 52%,rgba(224,24,158,.11));
+    border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:16px}
+  .hero .htext{max-width:560px}
+  .hero h2{margin:0 0 4px;font-size:16px;letter-spacing:-.01em}
+  .hero p{margin:0;color:var(--muted);font-size:12.8px}
+  .tiles{display:flex;gap:10px;flex-wrap:wrap}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 15px;min-width:88px;text-align:center}
+  .tile b{display:block;font-size:21px;letter-spacing:-.02em}
+  .tile span{font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.07em}
+  .laneicon{display:inline-flex;align-items:center;justify-content:center}
+  .laneicon svg{width:17px;height:17px}
+  .cardicon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    background:#0e1524;border:1px solid var(--line)}
+  .cardicon svg{width:17px;height:17px}
+
+  .lane{margin-top:30px}
+  .lanehead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .lanebar{width:4px;height:20px;border-radius:3px;background:var(--accent)}
+  .lanehead h2{font-size:14px;text-transform:uppercase;letter-spacing:.09em;margin:0;color:#cdd6e6}
+  .lanehead .count{color:var(--faint);font-size:12px;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+
+  .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+        border-radius:14px;padding:15px 16px;cursor:pointer;transition:.16s;position:relative;overflow:hidden}
+  .card:hover{transform:translateY(-2px);border-color:#3a4a6b;box-shadow:0 12px 28px rgba(0,0,0,.35)}
+  .card .glow{position:absolute;inset:0 auto auto 0;width:100%;height:3px;opacity:.9}
+  .card h3{margin:6px 0 6px;font-size:15px;letter-spacing:-.01em}
+  .card p{margin:0;color:var(--muted);font-size:12.8px}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:13px;gap:8px}
+  .powered{font-size:11px;color:var(--faint);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .brandtags{display:flex;gap:4px}
+  .bt{width:9px;height:9px;border-radius:50%;opacity:.85}
+  .go{font-size:11.5px;color:var(--accent);font-weight:700;opacity:0;transition:.16s}
+  .card:hover .go{opacity:1}
+
+  .empty{text-align:center;color:var(--faint);padding:60px 20px;font-size:14px}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(4,6,11,.72);backdrop-filter:blur(4px);z-index:100;
+           display:none;align-items:flex-start;justify-content:center;padding:40px 18px;overflow:auto}
+  .overlay.show{display:flex}
+  .modal{background:linear-gradient(180deg,#151b2b,#10131e);border:1px solid #2b3650;border-radius:18px;
+         width:100%;max-width:560px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:pop .18s ease}
+  @keyframes pop{from{transform:translateY(10px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+  .modal .x{float:right;cursor:pointer;color:var(--faint);font-size:22px;line-height:1;border:0;background:0}
+  .modal .x:hover{color:var(--ink)}
+  .modal .mtag{font-size:11px;font-family:ui-monospace,monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.08em}
+  .modal h3{margin:6px 0 4px;font-size:19px}
+  .modal .mdesc{color:var(--muted);font-size:13px;margin-bottom:16px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12px;color:#aeb9cd;margin-bottom:5px;font-weight:600}
+  .field input,.field select,.field textarea{width:100%;background:#0c111c;border:1px solid #2a3550;color:var(--ink);
+        border-radius:9px;padding:9px 11px;font-size:13.5px;font-family:inherit;outline:none}
+  .field textarea{min-height:64px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+  .prevwrap{margin-top:6px}
+  .prevlabel{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;
+             display:flex;justify-content:space-between;align-items:center}
+  .preview{background:#080b12;border:1px dashed #2a3550;border-radius:10px;padding:13px;font-size:13px;
+           color:#d3dbea;white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;line-height:1.55;max-height:220px;overflow:auto}
+  .btnrow{display:flex;gap:10px;margin-top:16px}
+  .btn{flex:1;border:0;border-radius:10px;padding:11px;font-size:13.5px;font-weight:700;cursor:pointer;transition:.15s}
+  .btn.primary{background:linear-gradient(135deg,#17b0f3,#6a24c8 55%,#e0189e);color:#fff}
+  .btn.primary:hover{filter:brightness(1.08)}
+  .btn.ghost{background:#1a2234;color:var(--muted);border:1px solid var(--line)}
+  .btn.ghost:hover{color:var(--ink)}
+  .hint{font-size:11.5px;color:var(--faint);margin-top:12px;text-align:center}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+         background:#10b981;color:#04150f;font-weight:700;padding:11px 20px;border-radius:10px;font-size:13.5px;
+         z-index:200;transition:.25s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{margin-top:50px;color:var(--faint);font-size:12px;text-align:center;line-height:1.7}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brandmark">
+      <div class="logo"><svg viewBox="0 0 100 100" aria-label="Evolvepreneur iQ">
+        <defs><linearGradient id="eiqg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#17b0f3"/><stop offset="0.52" stop-color="#6a24c8"/><stop offset="1" stop-color="#e0189e"/>
+        </linearGradient></defs>
+        <rect x="1" y="1" width="98" height="98" rx="26" fill="url(#eiqg)"/>
+        <path d="M27 20l3.2 7.6L38 31l-7.8 3.4L27 42l-3.2-7.6L16 31l7.8-3.4z" fill="#fff" opacity="0.95"/>
+        <g fill="#fff" opacity="0.17">
+          <rect x="30" y="60" width="10" height="22" rx="2"/><rect x="44" y="49" width="10" height="33" rx="2"/>
+          <rect x="60" y="54" width="10" height="28" rx="2"/><rect x="74" y="44" width="10" height="38" rx="2"/>
+        </g>
+        <path d="M33 88 C45 76 39 65 52 59 C63 54 59 45 70 37" fill="none" stroke="#fff" stroke-width="7.5" stroke-linecap="round"/>
+        <path d="M61 34l15-5-4 15z" fill="#fff"/>
+      </svg></div>
+      <div>
+        <h1 class="wordmark">Evolvepreneur<span class="reg">®</span><span class="iq">iQ</span> <span class="gm">AI General Manager</span></h1>
+        <div class="sub">One console across your whole business — same judgment, more bandwidth. Pick a business, pick a job, get the exact prompt to run.</div>
+      </div>
+    </div>
+    <div class="stat"><b id="visCount">0</b> actions · <b>5</b> businesses · powered by EIQ Manager</div>
+  </header>
+
+  <div class="hero">
+    <div class="htext">
+      <h2>What can I do across your businesses?</h2>
+      <p>Four ways in: ready-made Workflows, your Cowork Skills, the live EIQ Connector, and your persona library. Pick one, tune the fields, copy the prompt.</p>
+    </div>
+    <div class="tiles">
+      <div class="tile"><b id="tileFlows">0</b><span>Workflows</span></div>
+      <div class="tile"><b id="tileSkills">0</b><span>Skills</span></div>
+      <div class="tile"><b id="tileConn">0</b><span>Connector</span></div>
+      <div class="tile"><b id="tileLib">0</b><span>Personas</span></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="searchrow">
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8b98af" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="search" placeholder="Search — e.g. newsletter, prospects, revenue, proposal, leverage audit...">
+      </div>
+    </div>
+    <div class="segrow">
+      <div class="seg">
+        <button class="segbtn active" data-mode="flows">Workflows</button>
+        <button class="segbtn" data-mode="skills">Skills <span class="segn" id="segSkills">0</span></button>
+        <button class="segbtn" data-mode="connector">EIQ Connector <span class="segn" id="segConn">0</span></button>
+        <button class="segbtn" data-mode="library">Personas <span class="segn" id="segLib">0</span></button>
+      </div>
+    </div>
+    <div class="chips" id="brandChips"></div>
+  </div>
+
+  <div id="lanes"></div>
+  <div class="empty" id="empty" style="display:none">No actions match that filter. Try another brand or clear the search.</div>
+
+  <footer>
+    Click any card to open its prompt builder — fill the fields, copy the generated prompt, and paste it back to me in chat.<br>
+    The automation layer (morning brief, weekly prospect dig, etc.) runs as real scheduled tasks — ask me to set those up.<br>
+    <span style="opacity:.65">Evolvepreneur®iQ · one platform, not twenty tabs · 100% your data · Australian-built</span>
+  </footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+<div class="toast" id="toast">Prompt copied — paste it to me in chat</div>
+
+<script>
+/* ---------- brands ---------- */
+const BRANDS = {
+  all:{name:"All brands", color:"#7c8aa5"},
+  ep :{name:"Evolvepreneur", color:"#6366f1", note:"SaaS platform (EP)"},
+  esg:{name:"Evolve Systems", color:"#f59e0b", note:"Done-for-you publishing / bestseller authority"},
+  gmb:{name:"Get My Book", color:"#10b981", note:"Get My Book + Sell My Book"},
+  hln:{name:"Healthy Life Network", color:"#06b6d4", note:"Dr Warrick / wellness"},
+  lab:{name:"LongevityLab", color:"#a855f7", note:"LongevityLab"}
+};
+
+/* ---------- lanes ---------- */
+const LANES = [
+  {id:"write",   name:"Write & Voice",       color:"#8b5cf6"},
+  {id:"outreach",name:"Outreach & Sales",    color:"#f43f5e"},
+  {id:"content", name:"Content & Repurpose", color:"#f59e0b"},
+  {id:"build",   name:"Build & Publish",     color:"#22d3ee"},
+  {id:"data",    name:"Data, Money & CRM",   color:"#10b981"},
+  {id:"books",   name:"Books & Publishing",  color:"#eab308"},
+  {id:"ads",     name:"Ads & Video",         color:"#ec4899"},
+  {id:"ops",     name:"Ops & Admin",         color:"#60a5fa"}
+];
+
+/* helper for field defs */
+const sel = (label,opts,def)=>({type:"select",label,options:opts,def:def??opts[0]});
+const txt = (label,ph)=>({type:"text",label,ph:ph||""});
+const area= (label,ph)=>({type:"textarea",label,ph:ph||""});
+
+/* ---------- actions ---------- */
+/* each: {id,lane,title,desc,skill,brands:[],fields:{key:def},template(v)} */
+const ACTIONS = [
+  /* WRITE & VOICE */
+  {id:"voice-write",lane:"write",title:"Write in my voice",desc:"Any copy in John's natural voice — no AI slop.",skill:"john-voice · human-voice-writer",brands:["ep","esg","gmb","lab"],
+   fields:{type:sel("Content type",["email","blog post","landing page","social post","About page","newsletter","sales page"]),topic:txt("Topic / what it's about","e.g. our new bestseller service"),who:txt("Audience","e.g. self-published authors")},
+   template:v=>`Write a ${v.type} about "${v.topic}" for ${v.who||"my usual audience"}. Use my voice (apply the john-voice rules and human-voice-writer) — natural, specific, no AI slop, no rule-of-three clichés.`},
+
+  {id:"hln-write",lane:"write",title:"Write as Dr Warrick / HLN",desc:"Content in Healthy Life Network's house voice.",skill:"hln-brand-voice",brands:["hln"],
+   fields:{type:sel("Content type",["newsletter edition","blog post","email","social post","course lesson","member update"]),topic:txt("Topic","e.g. sleep and metabolic health")},
+   template:v=>`Write a ${v.type} about "${v.topic}" in the Healthy Life Network / Dr Warrick voice (use hln-brand-voice) — calm, evidence-based, empowering.`},
+
+  {id:"deslop",lane:"write",title:"De-slop a draft",desc:"Make an existing draft sound human, not AI.",skill:"de-slop-editor",brands:["ep","esg","gmb","hln","lab"],
+   fields:{draft:area("Paste the draft to clean up","Paste your text here...")},
+   template:v=>`Clean up this draft so it reads like a real person wrote it — strip clichés, corporate filler and AI tells, keep my voice (de-slop-editor):\n\n${v.draft||"[paste your draft here]"}`},
+
+  {id:"ai-check",lane:"write",title:"Is this AI-written?",desc:"Screen a piece for AI-generated signals.",skill:"ai-content-detector",brands:["ep","esg","gmb","hln","lab"],
+   fields:{draft:area("Paste the text to check","Paste text here...")},
+   template:v=>`Assess how likely this text is AI-generated and quote the specific signals (ai-content-detector):\n\n${v.draft||"[paste the text here]"}`},
+
+  /* OUTREACH & SALES */
+  {id:"outreach",lane:"outreach",title:"Warm prospect outreach",desc:"Personalised re-connection emails / LinkedIn DMs in my voice, loaded to EvolveMail.",skill:"evolve-outreach",brands:["ep","esg","gmb"],
+   fields:{channel:sel("Channel",["email","LinkedIn DM","both"]),who:txt("List / segment","e.g. lapsed proposal leads from last quarter"),angle:txt("Angle / reason to reconnect","e.g. new author growth offer")},
+   template:v=>`Write warm ${v.channel} outreach in my voice for ${v.who||"my prospect list"}. Angle: ${v.angle||"reconnect and re-open the conversation"}. Pull the contacts from EIQ, personalise each one, and load them into EvolveMail as reviewable drafts (evolve-outreach).`},
+
+  {id:"prospects",lane:"outreach",title:"Mine EIQ for prospects",desc:"Dig the CRM, email, LinkedIn archive & transcripts for leads / a Dream 100.",skill:"eiq-commercial-analysis",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),crit:txt("Who counts as a good lead","e.g. authors who requested a quote but never bought")},
+   template:v=>`Using the ${v.brand} EIQ connector, mine my CRM, inbox and LinkedIn archive for prospects: ${v.crit||"my best re-engagement opportunities"}. Rank them and give me a shortlist with why each one made it (eiq-commercial-analysis).`},
+
+  {id:"personas",lane:"outreach",title:"Build buyer personas",desc:"Personas built from your real EIQ customer data.",skill:"eiq-commercial-analysis",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"])},
+   template:v=>`Build buyer personas for ${v.brand} from my actual EIQ data — spend patterns, products bought, source. Give me 3–5 grounded personas (eiq-commercial-analysis).`},
+
+  {id:"five-buyers",lane:"outreach",title:"Five Buyers review",desc:"Five buyers read your page and report exactly where each drops off.",skill:"five-buyers",brands:["ep","esg","gmb","hln","lab"],
+   fields:{what:txt("Page / URL or paste","e.g. https://... or paste the copy")},
+   template:v=>`Run Five Buyers on this and tell me who buys, who leaves, the exact line each one loses interest, and the highest-impact fixes: ${v.what||"[paste the page copy or URL]"}`},
+
+  {id:"linkedsavvy",lane:"outreach",title:"LinkedSavvy campaign",desc:"Set up / edit a LinkedIn outreach campaign.",skill:"linkedsavvy-campaign-setup",brands:["ep","esg"],
+   fields:{aud:txt("Target audience","e.g. business coaches in AU"),goal:txt("Goal","e.g. book discovery calls")},
+   template:v=>`Set up a LinkedSavvy campaign targeting ${v.aud||"my ideal audience"} with the goal: ${v.goal||"start conversations"}. Draft the connection + follow-up sequence with spintax (linkedsavvy-campaign-setup).`},
+
+  {id:"li-archive",lane:"outreach",title:"Dig my LinkedIn archive",desc:"Mine your LinkedIn messages, conversations and event leads for warm reconnections.",skill:"eiq_linkedin · eiq-commercial-analysis",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),who:txt("What you're looking for","e.g. people I spoke to but never followed up")},
+   template:v=>`Search my ${v.brand} LinkedIn archive (eiq_linkedin) for ${v.who||"warm reconnection opportunities"} — conversations gone quiet, event leads, people I never followed up. Rank them and tell me who to reach first.`},
+
+  {id:"li-outreach",lane:"outreach",title:"LinkedIn → draft DMs",desc:"Turn LinkedIn leads into warm DMs in your voice, ready to review.",skill:"eiq_linkedin · evolve-outreach",brands:["ep","esg","gmb"],
+   fields:{who:txt("Which leads","e.g. the warm leads from my last webinar"),angle:txt("Angle","e.g. reconnect on the author offer")},
+   template:v=>`Pull ${v.who||"my warm LinkedIn leads"} from eiq_linkedin, then draft a personalised LinkedIn DM for each in my voice (evolve-outreach). Angle: ${v.angle||"reconnect and reopen the conversation"}. Drafts for my review — do not send.`},
+
+  /* CONTENT & REPURPOSE */
+  {id:"newsletter",lane:"content",title:"This week's newsletter",desc:"A fresh newsletter edition in the right brand voice.",skill:"hln-brand-voice · human-voice-writer",brands:["hln","ep","esg","lab"],
+   fields:{brand:sel("Brand",["Healthy Life Network","Evolvepreneur","Evolve Systems","LongevityLab"]),topic:txt("This edition's topic","e.g. why most author launches stall")},
+   template:v=>`Draft this week's ${v.brand} newsletter on "${v.topic}". Use the correct brand voice — human and specific, no slop.`},
+
+  {id:"repurpose",lane:"content",title:"Repurpose a piece",desc:"Turn one piece into social, email, LinkedIn, teaser, etc.",skill:"content-repurposer",brands:["hln","ep","esg","gmb","lab"],
+   fields:{src:sel("Source type",["newsletter","blog post","article","transcript"]),into:txt("Turn it into","e.g. 5 social captions + a LinkedIn post + a promo email")},
+   template:v=>`Take this ${v.src} and repurpose it into: ${v.into||"social captions, a LinkedIn post and a short promo email"}. Keep the brand voice, no AI slop (content-repurposer). Here it is:\n\n[paste the piece here]`},
+
+  {id:"social-batch",lane:"content",title:"Batch of social posts",desc:"A set of on-brand social posts on one theme.",skill:"human-voice-writer",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Brand",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),platform:sel("Platform",["LinkedIn","Instagram","Facebook","X"]),count:sel("How many",["3","5","7","10"],"5"),theme:txt("Theme","e.g. author myths")},
+   template:v=>`Write ${v.count} ${v.platform} posts for ${v.brand} on the theme "${v.theme}". In the brand voice, human and specific.`},
+
+  {id:"nl-module",lane:"content",title:"Draft newsletter → module",desc:"Write a newsletter and drop it into the EIQ newsletter module as a draft.",skill:"eiq_newsletter",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),topic:txt("Topic","e.g. our new author launch offer")},
+   template:v=>`Draft a newsletter about "${v.topic}" for ${v.brand} in the right brand voice, then create it as a draft in the EIQ newsletter module for my review — do not send.`},
+
+  {id:"campaign-module",lane:"content",title:"Draft email campaign → module",desc:"Write an email campaign and save it as a draft in EIQ.",skill:"eiq_campaign · eiq_email",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),goal:txt("Campaign goal","e.g. re-activate lapsed members"),seg:txt("Audience / segment","e.g. members inactive 60+ days")},
+   template:v=>`Write an email campaign for ${v.brand} to ${v.goal||"[goal]"}, aimed at ${v.seg||"the right segment"}. Draft it into the EIQ campaign/email module for my review — do not send.`},
+
+  {id:"doc-module",lane:"content",title:"Save a doc → EvolveDocs",desc:"Write something and file it in EvolveDocs as a draft.",skill:"eiq_docs",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),what:txt("What to write","e.g. a one-page SOP for author onboarding")},
+   template:v=>`Write ${v.what||"[the document]"} for ${v.brand} and save it as a draft in EvolveDocs (eiq_docs create).`},
+
+  /* BUILD & PUBLISH */
+  {id:"blog-post",lane:"build",title:"Post a blog to an EP site",desc:"Draft and load a blog post in the EP dashboard editor.",skill:"ep-blog-poster",brands:["ep","gmb","esg"],
+   fields:{site:sel("Site",["getmybook.store","sellmybook.app","evolvepreneur.app","evolvepreneuriq.app"]),title:txt("Post title","e.g. 7 signs your book launch will stall"),status:sel("Save as",["Draft","Publish"])},
+   template:v=>`Create a blog post titled "${v.title}" on ${v.site}, save as ${v.status}. Write it in the right brand voice, fill title/slug/abstract/content and verify it in the post list (ep-blog-poster).`},
+
+  {id:"proposal",lane:"build",title:"Build a proposal",desc:"Multi-page proposal / agreement in the EP composer.",skill:"ep-proposal-builder",brands:["ep","esg"],
+   fields:{client:txt("Client / recipient","e.g. Acme Publishing"),scope:txt("Scope","e.g. done-for-you book + launch"),price:txt("Pricing","e.g. $12,000")},
+   template:v=>`Build a proposal in EP for ${v.client||"[client]"}. Scope: ${v.scope||"[scope]"}. Pricing: ${v.price||"[price]"}. Include cover letter, terms, a pricing table and a signature block, using the HTML-embed workflow (ep-proposal-builder).`},
+
+  {id:"web-page",lane:"build",title:"Edit an EP web page",desc:"Restyle / reword / lay out a page in the Fluid Columns composer.",skill:"ep-web-page-designer",brands:["ep","gmb","esg"],
+   fields:{page:txt("Which page","e.g. Get My Book home hero"),change:txt("What to change","e.g. two-column layout + new headline")},
+   template:v=>`In the EP page composer, on "${v.page}", make this change: ${v.change}. Preserve existing formatting and verify on the live published page (ep-web-page-designer).`},
+
+  {id:"slides",lane:"build",title:"Workshop / webinar deck",desc:"A finished, branded scrollable HTML slide deck.",skill:"workshop-slides",brands:["ep","esg","gmb","hln","lab"],
+   fields:{topic:txt("Talk topic","e.g. becoming a bestselling author"),aud:txt("Audience","e.g. coaches & consultants")},
+   template:v=>`Build a workshop slide deck on "${v.topic}" for ${v.aud||"my audience"}. Interview me on the outline first, then build it branded (workshop-slides).`},
+
+  {id:"infographic",lane:"build",title:"Make an infographic",desc:"A single-page data infographic rendered to PNG.",skill:"infographic-maker",brands:["ep","esg","gmb","hln","lab"],
+   fields:{topic:txt("Topic / data","e.g. how our publishing process works")},
+   template:v=>`Make a single-page infographic about "${v.topic}". Get the facts/data right first, then design and render to PNG (infographic-maker).`},
+
+  /* DATA, MONEY & CRM (EIQ connectors) */
+  {id:"revenue",lane:"data",title:"Revenue summary",desc:"Pull real revenue from the EIQ connector.",skill:"get_revenue_summary (EIQ)",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),period:sel("Period",["this month","last month","this quarter","last 90 days","this year"])},
+   template:v=>`Give me the revenue summary for ${v.brand} for ${v.period} from the EIQ connector — headline number plus the notable movements.`},
+
+  {id:"top-customers",lane:"data",title:"Top customers by spend",desc:"Rank customers on real revenue, not quotes.",skill:"eiq-commercial-analysis",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),n:sel("How many",["10","20","50"],"20")},
+   template:v=>`List the top ${v.n} ${v.brand} customers by actual spend (paid revenue, not quotes) from EIQ, with totals and what they bought.`},
+
+  {id:"sub-health",lane:"data",title:"Subscription health",desc:"Churn, MRR and at-risk subscribers.",skill:"get_subscription_health (EIQ)",brands:["ep","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Healthy Life Network","LongevityLab"])},
+   template:v=>`Show me ${v.brand} subscription health from EIQ — MRR, churn and who's at risk right now.`},
+
+  {id:"accounting",lane:"data",title:"Accounting / AR / AP / P&L",desc:"Money questions answered from EIQ accounting.",skill:"eiq_accounting",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),q:txt("What do you want to know","e.g. who owes me money right now")},
+   template:v=>`Using the ${v.brand} EIQ accounting data: ${v.q||"give me AR, AP and a P&L snapshot"}.`},
+
+  {id:"ask-data",lane:"data",title:"Ask my data anything",desc:"Free-form question across your EIQ tables.",skill:"eiq_query · eiq_rag_search",brands:["ep","esg","gmb","hln","lab"],
+   fields:{brand:sel("Which business",["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"]),q:txt("Your question","e.g. which products drove the most orders last month")},
+   template:v=>`Question about my ${v.brand} EIQ data: ${v.q||"[your question]"}. Use the right EIQ tool and show me the SQL if you query directly.`},
+
+  {id:"biz-plan",lane:"data",title:"Business plan section",desc:"Write / revise a plan section backed by EIQ numbers.",skill:"eiq-business-planning",brands:["ep","esg"],
+   fields:{brand:sel("Plan",["Evolve Systems (ESG)","Evolvepreneur (EP)","Group consolidated","Get My Book / Sell My Book"]),section:txt("Section","e.g. revenue model & 12-month forecast")},
+   template:v=>`Work on the ${v.brand} business plan — the "${v.section}" section. Pull the supporting numbers from EIQ and fact-check as you go (eiq-business-planning).`},
+
+  /* BOOKS & PUBLISHING */
+  {id:"book-listing",lane:"books",title:"Book listing / promo",desc:"Create or improve a Get My Book / Sell My Book listing.",skill:"load-playbook · ep-blog-poster",brands:["gmb","esg"],
+   fields:{book:txt("Book title","e.g. The Author's Edge"),task:sel("Task",["write the listing","write a promo email","write launch social posts","improve the existing listing"])},
+   template:v=>`For the book "${v.book}", ${v.task} for Get My Book / Sell My Book. Load the brand playbook first so it matches the store's voice and standards (load-playbook).`},
+
+  {id:"books-to-sales",lane:"books",title:"Cross-reference books to sales",desc:"Match the catalogue against actual sales in EIQ.",skill:"eiq-commercial-analysis",brands:["gmb","esg"],
+   fields:{brand:sel("Which business",["Get My Book","Evolve Systems"])},
+   template:v=>`Cross-reference the ${v.brand} book catalogue against real sales in EIQ — which titles sell, which don't, and where the gaps are (eiq-commercial-analysis).`},
+
+  {id:"author-growth",lane:"books",title:"Author growth campaign",desc:"A campaign to bring in / activate authors.",skill:"load-playbook · evolve-outreach",brands:["gmb","esg"],
+   fields:{goal:txt("Goal","e.g. get 20 new authors onto Sell My Book"),channel:sel("Lead channel",["email","LinkedIn","both"])},
+   template:v=>`Plan an author-growth campaign to ${v.goal||"attract new authors"} via ${v.channel}. Use the brand playbook and draft the outreach in my voice (load-playbook + evolve-outreach).`},
+
+  /* ADS & VIDEO */
+  {id:"ad-script",lane:"ads",title:"Animated ad script",desc:"A Pixar-style cinematic ad script + hook library.",skill:"animated-ad-script",brands:["ep","esg","gmb","hln","lab"],
+   fields:{product:txt("Product / offer","e.g. done-for-you book publishing"),cta:txt("Call to action","e.g. book a strategy call")},
+   template:v=>`Write an animated ad script for "${v.product}" closing on the CTA "${v.cta||"learn more"}". Mute-first, third-person, Meta-compliant, with a hook library (animated-ad-script).`},
+
+  {id:"ad-produce",lane:"ads",title:"Produce the animated ad",desc:"Render a locked script into a finished video.",skill:"animated-ad-produce",brands:["ep","esg","gmb","hln","lab"],
+   fields:{},
+   template:v=>`Produce/render my locked animated ad script into a finished 9:16 video — start frames first for review, then animate, voiceover and assemble (animated-ad-produce).`},
+
+  {id:"ad-perf",lane:"ads",title:"Ad performance",desc:"Live ad metrics across platforms via Windsor.ai.",skill:"Windsor.ai get_data",brands:["ep","esg","gmb","hln","lab"],
+   fields:{platform:sel("Platform",["Meta Ads","Google Ads","TikTok Ads","LinkedIn Ads","Microsoft Ads","all"]),metric:txt("What to look at","e.g. spend, ROAS and top campaigns last 30 days")},
+   template:v=>`Pull my ${v.platform} performance from Windsor.ai — ${v.metric||"spend, ROAS and the top and bottom campaigns for the last 30 days"}.`},
+
+  /* OPS & ADMIN */
+  {id:"morning",lane:"ops",title:"Morning brief",desc:"A styled daily brief — run it now or schedule it.",skill:"morning",brands:["ep","esg","gmb","hln","lab"],
+   fields:{when:sel("Set up",["run it now","schedule it every weekday"])},
+   template:v=>`${v.when==="schedule it every weekday"?"Set up my morning brief as a recurring weekday scheduled task.":"Run my morning brief now and show it as a styled artifact."}`},
+
+  {id:"make-doc",lane:"ops",title:"Turn this into a file",desc:"Word doc, PDF, spreadsheet or slide deck from content.",skill:"docx · pdf · xlsx · pptx",brands:["ep","esg","gmb","hln","lab"],
+   fields:{type:sel("Output",["Word document","PDF","spreadsheet","slide deck"]),what:txt("From what","e.g. the notes I'll paste below")},
+   template:v=>`Turn this into a ${v.type}: ${v.what||"[describe or paste the content]"}.`},
+
+  {id:"freight",lane:"ops",title:"Freight quote",desc:"Couriers Please quote for a parcel job.",skill:"couriers-please-quote",brands:["esg","gmb"],
+   fields:{weight:txt("Weight (kg)","e.g. 3"),dims:txt("Dimensions (cm)","e.g. 30x22x10"),dest:txt("Destination","e.g. postcode 3000")},
+   template:v=>`Get a Couriers Please quote for a ${v.weight||"?"}kg parcel, ${v.dims||"[dims]"}, to ${v.dest||"[destination]"} — per-box and total price plus ETA (couriers-please-quote).`},
+
+  {id:"schedule",lane:"ops",title:"Set up an automation",desc:"A recurring scheduled task that runs itself.",skill:"scheduled tasks",brands:["ep","esg","gmb","hln","lab"],
+   fields:{what:txt("What should it do","e.g. weekly prospect dig + email me the shortlist"),cadence:sel("How often",["every weekday morning","weekly (Monday)","monthly (1st)","daily"])},
+   template:v=>`Set up a scheduled task: ${v.what||"[what it should do]"}, running ${v.cadence}. Confirm the schedule back to me.`},
+
+  {id:"persona",lane:"ops",title:"Adopt an EIQ persona",desc:"Work as a specialised EIQ VA (Sales Assistant, Leverage Audit...).",skill:"eiq-personas",brands:["ep","esg","gmb","hln","lab"],
+   fields:{persona:txt("Which persona / goal","e.g. run the Brutal Leverage Audit")},
+   template:v=>`Adopt the EIQ persona for: ${v.persona||"[persona or goal]"}. Fetch its system prompt from the skill library and work in that role (eiq-personas).`}
+];
+
+/* ---------- EIQ Skill Library (82 platform personas, adopted via eiq-personas) ---------- */
+const LIBRARY = [
+  {code:"premeeting_intel",name:"$1K Coffee Pre-Meeting Intelligence",cat:"Research",desc:"Deep-research dossier on a person before a high-stakes meeting: background, ICP fit, conversation starters, value angles."},
+  {code:"adversarial_check",name:"Adversarial Fact-Check",cat:"Research",desc:"Find evidence for AND against each answer; surface what a skeptical expert would challenge."},
+  {code:"ai_operating_philosophy",name:"AI Operating Philosophy",cat:"Business",desc:"Core operating principles for AI-first teams — bias responses toward leverage and speed."},
+  {code:"tool_evaluation",name:"AI Tool Adoption Evaluation",cat:"Business",desc:"Scores a candidate AI tool 1–10 across time saved, revenue, risk and fit, then recommends ignore/test/rollout/replace."},
+  {code:"best_practices_for_seo_and_ai_seo_for_websites",name:"SEO & AI SEO Best Practices",cat:"Custom",desc:"Traditional SEO, AI search visibility, answer-engine and generative-engine optimisation, practical implementation."},
+  {code:"leverage_audit",name:"Brutal Leverage Audit",cat:"Business",desc:"Brutally honest audit of a business, team or workflow — the 10 highest-leverage improvements with owners and 80/20 moves."},
+  {code:"skill_discovery",name:"Find the Right Skill",cat:"Productivity",desc:"Given an outcome, recommends which skills to use, the first prompt to run, and how to evaluate the output."},
+  {code:"imported_skill",name:"Humanize Draft to Voice",cat:"Writing",desc:"Revise a draft so it reads like a specific, knowledgeable person wrote it — not a language model."},
+  {code:"infographic_generator",name:"Infographic From Source Material",cat:"Creative",desc:"Three infographic concepts (general / business / expert) from uploaded source material."},
+  {code:"inbox_triage",name:"One-Channel Inbox Triage",cat:"Communication",desc:"Surface the most valuable unanswered messages from the last 30 days, research senders, draft replies for approval."},
+  {code:"display_ad_generator",name:"One-Prompt Display Ad",cat:"Creative",desc:"Creates a display-ad brief: image, headline, supporting line, CTA and brand-safe colours."},
+  {code:"pitch_from_kb",name:"Pitch From Knowledge Base",cat:"Marketing",desc:"Turns uploaded docs and transcripts into a compelling pitch grounded only in the source material."},
+  {code:"website_redesign",name:"Premium Website Redesign",cat:"Creative",desc:"One-prompt premium website redesign mockup synthesised from the company, ICP, offers and competitors."},
+  {code:"skill_dr_sales_page_standard",name:"DR Sales Page Standard",cat:"Marketing",desc:"The standard applied any time a direct-response sales or landing page is built for a funnel or offer."},
+  {code:"skill_youtube_best_practices",name:"YouTube Best Practices",cat:"Creative",desc:"Generate title, description, tags and hashtags from a transcript and voice profile, per YouTube best practice."},
+  {code:"travel_optimizer",name:"Travel Optimization Report",cat:"Productivity",desc:"Mines calendar data into a travel report: destination patterns, spend, route and loyalty recommendations."},
+  {code:"output_to_decisions",name:"Turn Output Into Decisions",cat:"Productivity",desc:"Converts a big research or report output into an implementation plan — decision, first 24h action, smallest test."},
+  {code:"all_rounder",name:"All-Rounder",cat:"General",desc:"A generalist VA with access to all modules and skills — can handle anything thrown at it."},
+  {code:"onboarding_guide",name:"Onboarding Guide",cat:"General",desc:"Walks new users through modules, settings and key workflows step by step."},
+  {code:"customer_support",name:"Customer Support Agent",cat:"Communication",desc:"Handle customer inquiries, manage tickets and provide knowledge-base answers."},
+  {code:"email_manager",name:"Email Manager",cat:"Communication",desc:"Read, compose, organise and respond to email across accounts; triage and prioritise your inbox."},
+  {code:"comms_hub_operator",name:"Communications Hub Operator",cat:"Communication",desc:"Manage email, team chat, notifications and SMS from a unified inbox."},
+  {code:"team_chat_moderator",name:"Team Chat Moderator",cat:"Communication",desc:"Manage team channels, facilitate discussions and keep conversations productive."},
+  {code:"sales_assistant",name:"Sales Assistant",cat:"Business",desc:"Manage leads, draft proposals, track agreements and handle invoicing."},
+  {code:"financial_analyst",name:"Financial Analyst",cat:"Business",desc:"Track invoices, QuickBooks data, e-commerce orders and financial metrics."},
+  {code:"crm_specialist",name:"CRM Specialist",cat:"Business",desc:"Manage contacts, companies, deals and relationships; track interactions and segment audiences."},
+  {code:"ecommerce_manager",name:"E-commerce Manager",cat:"Business",desc:"Manage products, orders, pricing and store operations across the full lifecycle."},
+  {code:"affiliate_manager",name:"Affiliate Program Manager",cat:"Business",desc:"Manage referral programs, track commissions and monitor affiliate performance."},
+  {code:"agreements_contracts",name:"Agreements & Contracts",cat:"Business",desc:"Draft, send and track agreements and contracts; manage the signing workflow."},
+  {code:"executive_assistant",name:"Executive Assistant",cat:"Productivity",desc:"Manage email, calendar, reminders, notes and contacts — all-in-one executive support."},
+  {code:"project_manager",name:"Project Manager",cat:"Productivity",desc:"Track tasks, projects, tickets, schedules and timesheets."},
+  {code:"workflow_automator",name:"Workflow Automator",cat:"Productivity",desc:"Build and manage automations, workflows and scheduled tasks across the platform."},
+  {code:"scheduling_booking",name:"Scheduling & Booking Agent",cat:"Productivity",desc:"Manage calendar, bookings, appointments and Zoom meetings."},
+  {code:"page_builder",name:"Web Page Builder",cat:"Creative",desc:"Design and build web pages, landing pages and microsites in the visual builder."},
+  {code:"survey_builder",name:"Survey & Forms Specialist",cat:"Creative",desc:"Design surveys, quizzes and assessment forms; collect and analyse responses."},
+  {code:"social_media_manager",name:"Social Media Manager",cat:"Creative",desc:"Schedule posts, manage channels, track RSS and run social campaigns."},
+  {code:"podcast_manager",name:"Podcast Producer",cat:"Creative",desc:"Manage episodes, transcripts, distribution and promotion."},
+  {code:"presentation_builder",name:"Presentation Builder",cat:"Creative",desc:"Build decks using six AI frameworks — blueprint, structure, story arc, design, content and simplification."},
+  {code:"video_curator",name:"Video Curator",cat:"Creative",desc:"Manage video library, transcripts, Zoom recordings and meetings."},
+  {code:"book_writer",name:"Book Writer & Editor",cat:"Writing",desc:"Write and edit books in EvolveWriter — chapters, versions and collaborative editing."},
+  {code:"knowledge_manager",name:"Knowledge Base Manager",cat:"Writing",desc:"Build and maintain knowledge-base articles, documentation and help content."},
+  {code:"book_publishing_advisor",name:"Book Publishing Advisor",cat:"Business",desc:"Publishing guidance from idea to bestseller — manuscript, cover, platform, launch and royalties."},
+  {code:"docs_writer",name:"Documentation Writer",cat:"Writing",desc:"Create and maintain documentation spaces and wiki pages in EvolveDocs."},
+  {code:"research_analyst",name:"Research Analyst",cat:"Research",desc:"Web research, data collection, RSS monitoring and findings compilation."},
+  {code:"zyte_researcher",name:"Web Scraping Specialist",cat:"Research",desc:"Deep web scraping, data extraction and competitive research."},
+  {code:"data_sync_specialist",name:"Data Sync Specialist",cat:"Research",desc:"Manage external database connections, field mappings and sync workflows."},
+  {code:"book_cataloger",name:"Book Cataloger",cat:"Research",desc:"Manage book inventory, Ingram imports, BISAC codes and the Get My Book catalog."},
+  {code:"marketing_campaigner",name:"Marketing Campaigner",cat:"Marketing",desc:"Create email campaigns, manage segments, build landing pages and track performance."},
+  {code:"amazon_ads_manager",name:"Amazon Ads Manager",cat:"Marketing",desc:"Manage Amazon campaigns, optimise bids, track ACOS and analyse performance."},
+  {code:"llm_seo_specialist",name:"LLM SEO Specialist",cat:"Marketing",desc:"Optimise for AI search engines (ChatGPT, Claude, Perplexity); audit visibility, build citation-worthy content."},
+  {code:"community_manager",name:"Community Manager",cat:"Community",desc:"Manage groups, moderate posts, engage members and track community health."},
+  {code:"chatbot_builder",name:"Chatbot Builder",cat:"Community",desc:"Design and configure AI chatbots for engagement, support and lead generation."},
+  {code:"hosting_admin",name:"Hosting & Domains Admin",cat:"Technical",desc:"Manage hosting, domains, DNS, email hosting and server provisioning."},
+  {code:"integration_specialist",name:"Integration Specialist",cat:"Technical",desc:"Configure integrations — Zapier, QuickBooks, Stripe, Mautic and more."},
+  {code:"bug_tracker",name:"Bug Tracker & QA",cat:"Technical",desc:"Report bugs, track issues, manage feature requests and coordinate QA testing."},
+  {code:"mobile_app_builder",name:"Mobile App Builder",cat:"Technical",desc:"Build and manage PWA/native mobile apps, screens and distribution."},
+  {code:"voice_producer",name:"Voice & Audio Producer",cat:"AI & Voice",desc:"Clone voices, generate text-to-speech audio and produce voice content with EvolveVoice."},
+  {code:"dashboard_analyst",name:"Dashboard & Analytics",cat:"Analytics",desc:"Build dashboards and widgets, track KPIs and generate reports across modules."},
+  {code:"file_organizer",name:"File & Document Organizer",cat:"Productivity",desc:"Manage files, folders, documents and CDN assets."},
+  {code:"notification_manager",name:"Notification Manager",cat:"Productivity",desc:"Configure notification events, email templates, delivery channels and alerts."},
+  {code:"journey_designer",name:"Journey & Course Designer",cat:"Learning",desc:"Design learning journeys, courses, onboarding flows and development paths."},
+  {code:"content_creator",name:"Content Creator",cat:"Marketing",desc:"Multi-platform content strategy — editorial calendars, copy and brand storytelling."},
+  {code:"growth_hacker",name:"Growth Hacker",cat:"Marketing",desc:"Rapid user acquisition, funnel optimisation, A/B testing and scalable growth channels."},
+  {code:"social_media_strategist",name:"Social Media Strategist",cat:"Marketing",desc:"Cross-platform strategy for LinkedIn, X and professional networks; thought leadership."},
+  {code:"sprint_prioritizer",name:"Sprint Prioritizer",cat:"Product",desc:"Prioritise features with RICE, MoSCoW and Kano; plan sprints for velocity and value."},
+  {code:"feedback_synthesizer",name:"Feedback Synthesizer",cat:"Product",desc:"Synthesise user feedback into insights, sentiment analysis and prioritised recommendations."},
+  {code:"trend_researcher",name:"Trend Researcher",cat:"Product",desc:"Identify emerging trends, competitive moves and strategic opportunities."},
+  {code:"project_shepherd",name:"Project Shepherd",cat:"Productivity",desc:"Coordinate timelines, stakeholder alignment, risk and resources from kickoff to delivery."},
+  {code:"executive_summary_generator",name:"Executive Summary Generator",cat:"Business",desc:"Turn complex inputs into concise C-suite-ready executive summaries and strategy briefs."},
+  {code:"finance_tracker",name:"Finance Tracker",cat:"Business",desc:"Cash flow, budget tracking, financial reporting and performance analysis."},
+  {code:"legal_compliance_checker",name:"Legal Compliance Checker",cat:"Business",desc:"Ensure operations, data, contracts and content comply with relevant laws and regulations."},
+  {code:"data_analytics_reporter",name:"Data Analytics Reporter",cat:"Analytics",desc:"Transform raw data into insights, dashboards, reports and recommendations."},
+  {code:"brand_guardian",name:"Brand Guardian",cat:"Creative",desc:"Keep brand identity, voice and visuals consistent; review content for alignment."},
+  {code:"ux_researcher",name:"UX Researcher",cat:"Creative",desc:"User-behaviour analysis, usability testing design and research-to-product improvements."},
+  {code:"silent_client_detector",name:"Silent Client Detector",cat:"Client Playbooks",desc:"Reads 12 months of client email to catch relationships going quiet, ranked by neglect not revenue."},
+  {code:"reengagement_drafter",name:"Re-engagement Drafter",cat:"Client Playbooks",desc:"For a quiet client, drafts a warm, specific email that picks up the real last thread."},
+  {code:"overdue_invoice_chaser",name:"Overdue Invoice Chaser",cat:"Client Playbooks",desc:"Finds overdue invoices, ranks by age and amount, and drafts a follow-up that escalates with age."},
+  {code:"client_review_brief",name:"Client Review Brief",cat:"Client Playbooks",desc:"One-page pre-meeting brief for a client: recent work, open threads, money status and sentiment."},
+  {code:"growth_signal_scanner",name:"Growth Signal Scanner",cat:"Client Playbooks",desc:"Scans correspondence and purchases for real expansion signals, each backed by a quote."},
+  {code:"miro_presentation_builder",name:"Miro Presentation Builder",cat:"Creative",desc:"Build a vertical-flowchart Miro board for a topic — course-content style, screen-record ready."},
+  {code:"writing_nova_skills",name:"Skill-Writing Guide",cat:"Custom",desc:"Guidance for creating and editing skills — format, skills-vs-agents test, discovery and testing."},
+  {code:"writing_skills_routing_map",name:"Writing Skills Routing Map",cat:"Custom",desc:"The routing map for which writing skill to use when."},
+  {code:"marketing_seo_expert",name:"Marketing & SEO Expert",cat:"Marketing",desc:"Digital marketer specialising in SEO, conversion optimisation and data-driven strategy."},
+  {code:"book_publishing_assistant",name:"Book Publishing Assistant",cat:"Publishing",desc:"Publishing expert for metadata, Amazon keywords, BISAC categories and distribution strategy."},
+  {code:"financial_report_analyst",name:"Financial Analyst (Reports)",cat:"Business",desc:"Analyst for royalty reports, revenue projections and expense tracking."},
+  {code:"email_productivity_coach",name:"Email Productivity Coach",cat:"Productivity",desc:"Inbox management, templates and professional communication."},
+  {code:"document_report_generator",name:"Document & Report Generator",cat:"Productivity",desc:"Creates professional reports, proposals, invoices and business documents."}
+];
+// Per-tenant availability (pulled live from all 5 connectors): the 79-persona core is shared;
+// these codes exist only on specific tenants, so the brand filter reflects each tenant's real library.
+const LIB_ESG_ONLY=new Set(["miro_presentation_builder","writing_nova_skills","writing_skills_routing_map"]);
+const LIB_GMB_ONLY=new Set(["marketing_seo_expert","book_publishing_assistant","financial_report_analyst","email_productivity_coach","document_report_generator"]);
+const libBrands=code=>LIB_ESG_ONLY.has(code)?["esg"]:LIB_GMB_ONLY.has(code)?["gmb"]:["ep","esg","gmb","hln","lab"];
+const LIBCOLORS=["#8b5cf6","#f43f5e","#f59e0b","#22d3ee","#10b981","#eab308","#ec4899","#60a5fa","#a855f7","#34d399","#fb7185","#38bdf8"];
+const LIB_LANES=[]; {const seen={};let i=0;LIBRARY.forEach(s=>{if(!(s.cat in seen)){seen[s.cat]=LIBCOLORS[i%LIBCOLORS.length];i++;LIB_LANES.push({id:s.cat,name:s.cat,color:seen[s.cat]});}});}
+const LIB_ACTIONS=LIBRARY.map(s=>({
+  id:"lib_"+s.code,lane:s.cat,title:s.name,desc:s.desc,skill:"eiq-personas · "+s.code,brands:libBrands(s.code),
+  fields:{task:area("What do you want it to do?","Describe the client, topic or goal...")},
+  template:v=>`Adopt the EIQ "${s.name}" skill (code: ${s.code}) — fetch its system prompt from the skill library and work in that role (eiq-personas). Task: ${v.task||"[what you want done]"}.`
+}));
+
+/* ---------- Cowork Skills (the installed skills running in this session) ---------- */
+const SKILLS = [
+  {code:"john-voice",name:"John's Voice Guard",cat:"Writing & Voice",desc:"Style guard applied to any copy going out under John's name or brands."},
+  {code:"human-voice-writer",name:"Human Voice Writer",cat:"Writing & Voice",desc:"Draft brand-new content in a natural, specific human voice from the start."},
+  {code:"de-slop-editor",name:"De-Slop Editor",cat:"Writing & Voice",desc:"Revise a draft so it stops reading as generic AI slop and sounds human."},
+  {code:"hln-brand-voice",name:"HLN / Dr Warrick Voice",cat:"Writing & Voice",desc:"Write or revise content in Healthy Life Network's house voice."},
+  {code:"humanizer",name:"Humanizer",cat:"Writing & Voice",desc:"Remove AI writing patterns and tells so text sounds naturally human."},
+  {code:"ai-content-detector",name:"AI Content Detector",cat:"Writing & Voice",desc:"Judge how likely a piece is AI-generated, quoting the specific signals."},
+  {code:"content-repurposer",name:"Content Repurposer",cat:"Writing & Voice",desc:"Turn one piece into social captions, emails, LinkedIn posts, teasers and more."},
+  {code:"evolve-outreach",name:"Evolve Outreach",cat:"Outreach & Sales",desc:"Warm re-connection emails and LinkedIn DMs in John's voice, loaded to EvolveMail."},
+  {code:"eiq-commercial-analysis",name:"EIQ Commercial Analysis",cat:"Outreach & Sales",desc:"Mine EIQ CRM, email and LinkedIn for prospects, personas and Dream 100 lists."},
+  {code:"five-buyers",name:"Five Buyers",cat:"Outreach & Sales",desc:"Five buyers pressure-test a sales or landing page and report where each drops off."},
+  {code:"linkedsavvy",name:"LinkedSavvy",cat:"Outreach & Sales",desc:"How to run the LinkedSavvy LinkedIn outreach automation platform."},
+  {code:"linkedsavvy-campaign-setup",name:"LinkedSavvy Campaign Setup",cat:"Outreach & Sales",desc:"Build, launch and fix John's LinkedSavvy campaigns via the browser."},
+  {code:"ep-blog-poster",name:"EP Blog Poster",cat:"Build & Publish",desc:"Create blog posts on EP sites through the dashboard editor."},
+  {code:"ep-proposal-builder",name:"EP Proposal Builder",cat:"Build & Publish",desc:"Build multi-page proposals and agreements in the EP composer."},
+  {code:"ep-web-page-designer",name:"EP Web Page Designer",cat:"Build & Publish",desc:"Edit, restyle and lay out pages in the EP web page editor."},
+  {code:"workshop-slides",name:"Workshop Slides",cat:"Build & Publish",desc:"Turn a topic into a finished, branded, scrollable HTML slide deck."},
+  {code:"infographic-maker",name:"Infographic Maker",cat:"Build & Publish",desc:"Build a single-page data infographic as editable HTML rendered to PNG."},
+  {code:"load-playbook",name:"Load Brand Playbook",cat:"Brand & Planning",desc:"Load the live brand playbook before drafting or building for a brand."},
+  {code:"eiq-business-planning",name:"EIQ Business Planning",cat:"Brand & Planning",desc:"Write and fact-check the ESG and EP business plans from EIQ data."},
+  {code:"eiq-personas",name:"EIQ Personas",cat:"Brand & Planning",desc:"Adopt a specialised EIQ VA persona from the connector skill library."},
+  {code:"animated-ad-script",name:"Animated Ad Script",cat:"Media & Ads",desc:"Write cinematic AI-animated video-ad scripts and their hook libraries."},
+  {code:"animated-ad-produce",name:"Animated Ad Produce",cat:"Media & Ads",desc:"Render a locked ad script into a finished 9:16 video."},
+  {code:"docx",name:"Word Documents",cat:"Documents",desc:"Create, read and edit Word .docx documents and templates."},
+  {code:"pptx",name:"Presentations",cat:"Documents",desc:"Create, read and edit PowerPoint .pptx decks."},
+  {code:"xlsx",name:"Spreadsheets",cat:"Documents",desc:"Create, read and edit Excel spreadsheets and clean messy data."},
+  {code:"pdf",name:"PDFs",cat:"Documents",desc:"Create, read, merge, split, fill and OCR PDF files."},
+  {code:"morning",name:"Morning Brief",cat:"Utilities",desc:"Render a styled morning brief, or set it up as a recurring weekday task."},
+  {code:"couriers-please-quote",name:"Couriers Please Quote",cat:"Utilities",desc:"Get a Couriers Please freight quote and compare against other carriers."},
+  {code:"dataviz",name:"Data Viz System",cat:"Utilities",desc:"Design-system rules for building clean, consistent charts and dashboards."},
+  {code:"skill-creator",name:"Skill Creator",cat:"Utilities",desc:"Create, modify, test and optimise Cowork skills."},
+  {code:"claude-in-chrome",name:"Claude in Chrome",cat:"Utilities",desc:"Automate the browser — click, fill forms, screenshot, read console."}
+];
+const SKILL_LANES=[]; {const seen={};let i=0;SKILLS.forEach(s=>{if(!(s.cat in seen)){seen[s.cat]=LIBCOLORS[i%LIBCOLORS.length];i++;SKILL_LANES.push({id:s.cat,name:s.cat,color:seen[s.cat]});}});}
+const SKILL_ACTIONS=SKILLS.map(s=>({
+  id:"sk_"+s.code,lane:s.cat,title:s.name,desc:s.desc,skill:s.code,brands:["all"],
+  fields:{task:area("What do you want it to do?","Describe the task, topic or draft...")},
+  template:v=>`Use the ${s.name} skill (${s.code}) to: ${v.task||"[what you want done]"}.`
+}));
+
+/* ---------- EIQ Connector capabilities (the real tools/modules from eiq_about) ---------- */
+const BIZ=["Evolvepreneur","Evolve Systems","Get My Book","Healthy Life Network","LongevityLab"];
+const CONNECTOR=[
+  {code:"eiq_accounting",name:"P&L statement",cat:"Money & Accounting",desc:"Profit & loss for any period, from the QuickBooks-synced ledger.",ask:"pull my P&L for the period"},
+  {code:"eiq_accounting",name:"AR aging — who owes me",cat:"Money & Accounting",desc:"Outstanding customer invoices ranked by how overdue they are.",ask:"show my AR aging — who owes me and how overdue"},
+  {code:"eiq_accounting",name:"AP aging — what I owe",cat:"Money & Accounting",desc:"Unpaid bills and vendor balances.",ask:"show my AP aging — what I owe vendors right now"},
+  {code:"eiq_accounting",name:"Invoice search",cat:"Money & Accounting",desc:"Find outstanding or paid customer invoices.",ask:"find outstanding customer invoices"},
+  {code:"eiq_accounting",name:"Vendor spend",cat:"Money & Accounting",desc:"Top vendors by spend for a period.",ask:"rank my top vendors by spend"},
+  {code:"get_revenue_summary",name:"Revenue summary",cat:"Money & Accounting",desc:"Sales totals, MTD/YTD, this month vs last.",ask:"give me the revenue summary (this month vs last)"},
+  {code:"get_subscription_health",name:"Subscription health",cat:"Money & Accounting",desc:"MRR, churn and at-risk subscriptions.",ask:"show subscription health — MRR, churn and who is at risk"},
+  {code:"eiq_royalty",name:"Royalty report",cat:"Money & Accounting",desc:"Royalty totals by supplier, platform, transactions and payments.",ask:"pull the royalty report — totals by supplier and platform"},
+  {code:"eiq_crm",name:"Contacts, deals & tags",cat:"CRM & Sales",desc:"Look up and manage CRM contacts, deals and tagging.",ask:"look up contacts, deals and tags"},
+  {code:"eiq_deal",name:"Sales pipeline",cat:"CRM & Sales",desc:"Pipeline summary by stage; move deals between stages.",ask:"show my sales pipeline summary by stage"},
+  {code:"eiq_pin",name:"Contact-intel pins",cat:"CRM & Sales",desc:"Short remember-this facts on contacts and prospects.",ask:"show or add contact-intel pins"},
+  {code:"eiq_outreach",name:"Outreach batches",cat:"CRM & Sales",desc:"Campaign batches with per-recipient send tracking.",ask:"set up an outreach batch with per-recipient tracking"},
+  {code:"mmt_magic_box",name:"Prospect finder (Magic Box)",cat:"CRM & Sales",desc:"AI prospect finder across the 80k+ member universe.",ask:"find new prospects with the Magic Box (one search)"},
+  {code:"eiq_clone",name:"AI voice clones",cat:"CRM & Sales",desc:"List clone personas and draft in a person's voice.",ask:"list my AI voice clones (load before drafting in my voice)"},
+  {code:"eiq_inbox",name:"Inbox read & search",cat:"Email & Comms",desc:"Read, search and thread your IMAP email inbox.",ask:"search and read my email inbox"},
+  {code:"eiq_email",name:"Draft an email",cat:"Email & Comms",desc:"Create an email draft (drafts only, never sends).",ask:"draft an email for review (drafts only, do not send)"},
+  {code:"eiq_linkedin",name:"LinkedIn messages & leads",cat:"Email & Comms",desc:"Search the LinkedIn archive, conversations and event leads.",ask:"search my LinkedIn messages, conversations and leads"},
+  {code:"eiq_calendar",name:"Calendar & bookings",cat:"Email & Comms",desc:"Upcoming and past meetings, event search, bookings.",ask:"show my upcoming meetings and bookings"},
+  {code:"eiq_docs",name:"EvolveDocs — read & draft",cat:"Docs & Writing",desc:"Find, read, create and update EvolveDocs documents.",ask:"find, read or draft an EvolveDocs document"},
+  {code:"eiq_docs_files",name:"EvolveDocs files",cat:"Docs & Writing",desc:"File and folder attachments on a doc space.",ask:"manage the file attachments on a doc space"},
+  {code:"eiq_newsletter",name:"Newsletter drafting",cat:"Docs & Writing",desc:"Draft newsletter issues, articles and ideas (drafts only).",ask:"draft a newsletter issue or article (drafts only)"},
+  {code:"eiq_writer",name:"EvolveWriter manuscripts",cat:"Docs & Writing",desc:"List, read and edit book chapters in EvolveWriter.",ask:"list, read or edit my EvolveWriter manuscript"},
+  {code:"eiq_hq",name:"EvolveHQ (EOS / traction)",cat:"Docs & Writing",desc:"Log KPIs, IDS issues, quarterly rocks and action items.",ask:"log a KPI, issue, rock or action item in EvolveHQ"},
+  {code:"eiq_pages",name:"Page Builder",cat:"Web & Media",desc:"Read and edit sites, pages, menus and block content.",ask:"read or edit a Page Builder site, page or block"},
+  {code:"eiq_media",name:"Media library",cat:"Web & Media",desc:"Upload or find an image at a permanent public URL.",ask:"upload or find an image in the media library"},
+  {code:"eiq_social_write",name:"Social campaign (draft)",cat:"Web & Media",desc:"Create a social campaign and generate posts for review.",ask:"create a social campaign and generate posts for review"},
+  {code:"eiq_ecom_product_read",name:"Products (read)",cat:"Commerce & Ops",desc:"List, search and get products from the catalog.",ask:"list, search or get products"},
+  {code:"eiq_ecom_product_write",name:"Products (write)",cat:"Commerce & Ops",desc:"Create or edit a product, set price or stock.",ask:"create or edit a product, or set its price or stock"},
+  {code:"list_orders",name:"Orders & customers",cat:"Commerce & Ops",desc:"Order history and customer list.",ask:"list order history and customers"},
+  {code:"eiq_fulfillment",name:"Stock & shipments",cat:"Commerce & Ops",desc:"Stock levels, shipments and fulfilment status.",ask:"check stock levels or shipment status"},
+  {code:"eiq_task",name:"Tasks",cat:"Commerce & Ops",desc:"List, create and manage workspace tasks.",ask:"show or create workspace tasks"},
+  {code:"eiq_ticket",name:"Support tickets",cat:"Commerce & Ops",desc:"Open tickets, threads and status by department.",ask:"show open support tickets and their threads"},
+  {code:"eiq_survey",name:"Surveys",cat:"Commerce & Ops",desc:"Read survey questions and browse responses.",ask:"read a survey's questions and responses"},
+  {code:"eiq_youtube",name:"YouTube channel & analytics",cat:"Video",desc:"Videos, analytics, transcripts, comments and optimisation.",ask:"list videos, read analytics, transcripts or comments"},
+  {code:"eiq_analytics",name:"Web analytics",cat:"Data & Search",desc:"Visits, top pages, referrers, sources, devices and geo.",ask:"show my web analytics — visits, top pages and sources"},
+  {code:"eiq_query",name:"Ask the database (SQL)",cat:"Data & Search",desc:"Read-only SQL for questions no specific tool covers.",ask:"answer this with a read-only SQL query (show me the SQL)"},
+  {code:"eiq_search",name:"Fuzzy cross-table search",cat:"Data & Search",desc:"Search across tables for a name or term.",ask:"do a fuzzy cross-table search for"},
+  {code:"eiq_rag_search",name:"Semantic search",cat:"Data & Search",desc:"Meaning-based search across training docs and content.",ask:"semantic-search my training docs and content for"},
+  {code:"eiq_recent_activity",name:"Recent activity",cat:"Data & Search",desc:"The recent activity timeline across modules.",ask:"show my recent activity timeline"}
+];
+const CONNECTOR_LANES=[]; {const seen={};let i=0;CONNECTOR.forEach(s=>{if(!(s.cat in seen)){seen[s.cat]=LIBCOLORS[i%LIBCOLORS.length];i++;CONNECTOR_LANES.push({id:s.cat,name:s.cat,color:seen[s.cat]});}});}
+const CONNECTOR_ACTIONS=CONNECTOR.map((s,i)=>({
+  id:"cx_"+i,lane:s.cat,title:s.name,desc:s.desc,skill:s.code,brands:["all"],
+  fields:{biz:sel("Business",BIZ),task:txt("Specifics (optional)","e.g. last 90 days / this customer / this topic")},
+  template:v=>`Using the ${v.biz} EIQ connector, ${s.ask}${v.task?` — ${v.task}`:''}. (${s.code})`
+}));
+
+const VIEWS={
+  flows:{lanes:LANES,data:ACTIONS,brandAware:true},
+  skills:{lanes:SKILL_LANES,data:SKILL_ACTIONS,brandAware:false},
+  connector:{lanes:CONNECTOR_LANES,data:CONNECTOR_ACTIONS,brandAware:false},
+  library:{lanes:LIB_LANES,data:LIB_ACTIONS,brandAware:true}
+};
+
+/* ---------- state + render ---------- */
+let activeBrand="all", query="", mode="flows";
+
+function brandChips(){
+  const c=document.getElementById("brandChips");
+  c.innerHTML="";
+  Object.entries(BRANDS).forEach(([k,b])=>{
+    const el=document.createElement("div");
+    el.className="chip"+(activeBrand===k?" active":"");
+    el.dataset.brand=k;
+    el.innerHTML=(k!=="all"?`<span class="dot" style="background:${b.color}"></span>`:"")+b.name;
+    el.onclick=()=>{activeBrand=k;render();document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.brand===k));};
+    c.appendChild(el);
+  });
+}
+
+function matches(a,ignoreBrand){
+  const brandOK = ignoreBrand || activeBrand==="all" || a.brands.includes(activeBrand);
+  const q=query.trim().toLowerCase();
+  const qOK = !q || (a.title+" "+a.desc+" "+a.skill+" "+a.lane).toLowerCase().includes(q);
+  return brandOK && qOK;
+}
+
+function svg(inner){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>';}
+const ICONS={
+  money:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 6L2 7"/>',
+  video:'<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>',
+  cart:'<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>',
+  web:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+  build:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2-2 2.6-2.6z"/>',
+  doc:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>',
+  pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  people:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/>',
+  send:'<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>',
+  layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  mega:'<path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+  data:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  check:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  cap:'<path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/>',
+  bot:'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M12 8V4M8 2h8"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>',
+  brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>',
+  grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>'
+};
+const ICON_MAP=[["money",["money","account","finance","revenue"]],["mail",["email","comms","communication","inbox"]],["video",["video"]],["cart",["commerce","ecom","product","ops"]],["web",["web","page","media"]],["build",["build","technical"]],["doc",["docs","publish","book"]],["pen",["write","writing","voice"]],["people",["crm","sales","contact","client","community"]],["send",["outreach"]],["layers",["content","repurpose"]],["mega",["market","ads"]],["data",["data","analytic"]],["search",["research","search"]],["check",["productivity"]],["cap",["learning"]],["bot",["ai"]],["brief",["business","project"]],["spark",["creative","general","custom"]]];
+function iconFor(name){const n=(name||"").toLowerCase();for(const [ic,keys] of ICON_MAP){if(keys.some(k=>n.includes(k)))return svg(ICONS[ic]);}return svg(ICONS.grid);}
+
+function render(){
+  const view = VIEWS[mode];
+  const brandAware = view.brandAware;
+  document.getElementById("brandChips").style.display = brandAware?"flex":"none";
+  const lanesEl=document.getElementById("lanes");
+  lanesEl.innerHTML="";
+  let visible=0;
+  view.lanes.forEach(lane=>{
+    const items=view.data.filter(a=>a.lane===lane.id && matches(a,!brandAware));
+    if(!items.length) return;
+    visible+=items.length;
+    const laneDiv=document.createElement("div");
+    laneDiv.className="lane";
+    laneDiv.innerHTML=`<div class="lanehead"><div class="lanebar" style="background:${lane.color}"></div>
+      <span class="laneicon" style="color:${lane.color}">${iconFor(lane.name)}</span>
+      <h2>${lane.name}</h2><span class="count">${items.length}</span></div>`;
+    const grid=document.createElement("div");
+    grid.className="grid";
+    items.forEach(a=>{
+      const card=document.createElement("div");
+      card.className="card";
+      const tags=a.brands.map(b=>`<span class="bt" title="${BRANDS[b].name}" style="background:${BRANDS[b].color}"></span>`).join("");
+      card.innerHTML=`<div class="glow" style="background:${lane.color}"></div>
+        <div class="cardicon" style="color:${lane.color}">${iconFor(lane.name)}</div>
+        <h3>${a.title}</h3><p>${a.desc}</p>
+        <div class="foot"><span class="powered">${a.skill}</span>
+        <span class="brandtags">${tags}</span></div>
+        <div class="foot" style="margin-top:8px"><span class="go">Open builder →</span></div>`;
+      card.onclick=()=>openModal(a,lane);
+      grid.appendChild(card);
+    });
+    laneDiv.appendChild(grid);
+    lanesEl.appendChild(laneDiv);
+  });
+  document.getElementById("empty").style.display=visible?"none":"block";
+  document.getElementById("visCount").textContent=visible;
+}
+
+/* ---------- modal / prompt builder ---------- */
+let current=null;
+function openModal(a,lane){
+  current=a;
+  const m=document.getElementById("modal");
+  const fields=Object.entries(a.fields||{});
+  let fieldsHTML=fields.map(([key,f])=>{
+    if(f.type==="select"){
+      const opts=f.options.map(o=>`<option ${o===f.def?"selected":""}>${o}</option>`).join("");
+      return `<div class="field"><label>${f.label}</label><select data-k="${key}">${opts}</select></div>`;
+    }
+    if(f.type==="textarea"){
+      return `<div class="field"><label>${f.label}</label><textarea data-k="${key}" placeholder="${f.ph||""}"></textarea></div>`;
+    }
+    return `<div class="field"><label>${f.label}</label><input data-k="${key}" placeholder="${f.ph||""}"></div>`;
+  }).join("");
+  if(!fields.length) fieldsHTML=`<div class="mdesc" style="margin-bottom:0">No inputs needed — just copy and run.</div>`;
+  m.innerHTML=`<button class="x" onclick="closeModal()">×</button>
+    <div class="mtag" style="color:${lane.color}">${lane.name}</div>
+    <h3>${a.title}</h3>
+    <div class="mdesc">${a.desc} · <span style="font-family:ui-monospace,monospace;font-size:11px;color:#6b7890">${a.skill}</span></div>
+    ${fieldsHTML}
+    <div class="prevwrap">
+      <div class="prevlabel"><span>Generated prompt</span><span id="charc"></span></div>
+      <div class="preview" id="preview"></div>
+    </div>
+    <div class="btnrow">
+      <button class="btn ghost" onclick="closeModal()">Close</button>
+      <button class="btn primary" onclick="copyPrompt()">Copy prompt</button>
+    </div>
+    <div class="hint">Paste it into the Cowork chat and I'll run it.</div>`;
+  document.getElementById("overlay").classList.add("show");
+  m.querySelectorAll("[data-k]").forEach(el=>el.addEventListener("input",updatePreview));
+  updatePreview();
+}
+function values(){
+  const v={};
+  document.querySelectorAll("#modal [data-k]").forEach(el=>v[el.dataset.k]=el.value);
+  return v;
+}
+function updatePreview(){
+  if(!current) return;
+  const p=current.template(values());
+  document.getElementById("preview").textContent=p;
+  document.getElementById("charc").textContent=p.length+" chars";
+}
+function copyPrompt(){
+  const text=current.template(values());
+  const done=()=>toast();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));
+  } else fallbackCopy(text,done);
+}
+function fallbackCopy(text,cb){
+  const ta=document.createElement("textarea");ta.value=text;ta.style.position="fixed";ta.style.opacity="0";
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy")}catch(e){}
+  document.body.removeChild(ta);cb&&cb();
+}
+function closeModal(){document.getElementById("overlay").classList.remove("show");current=null;}
+function toast(){const t=document.getElementById("toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800);}
+
+document.getElementById("overlay").addEventListener("click",e=>{if(e.target.id==="overlay")closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+document.getElementById("search").addEventListener("input",e=>{query=e.target.value;render();});
+document.querySelectorAll(".segbtn").forEach(b=>b.addEventListener("click",()=>{
+  mode=b.dataset.mode;
+  document.querySelectorAll(".segbtn").forEach(x=>x.classList.toggle("active",x===b));
+  render();
+}));
+document.getElementById("segSkills").textContent=SKILL_ACTIONS.length;
+document.getElementById("segConn").textContent=CONNECTOR_ACTIONS.length;
+document.getElementById("segLib").textContent=LIBRARY.length;
+document.getElementById("tileFlows").textContent=ACTIONS.length;
+document.getElementById("tileSkills").textContent=SKILL_ACTIONS.length;
+document.getElementById("tileConn").textContent=CONNECTOR_ACTIONS.length;
+document.getElementById("tileLib").textContent=LIBRARY.length;
+
+brandChips();
+render();
+</script>
+</body>
+</html>
