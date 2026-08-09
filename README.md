@@ -1,43 +1,73 @@
 # Evolvepreneur iQ — plugin marketplace
 
-The marketplace for the **Evolvepreneur iQ Console** — a branded, connector-driven launcher for your businesses (Workflows, Cowork Skills, EIQ Connector tools, and the EIQ persona library), plus first-run setup that provisions your standing automations.
+This repo hosts the **Evolvepreneur iQ Console** plugin — a branded, connector-driven launcher for your businesses. It's a single-page dashboard with four tabs (Workflows, your Cowork Skills, the live EIQ Connector tools, and your EIQ persona library), plus a first-run setup skill that can create standing automations (morning brief, weekly prospect dig, overdue-invoice sweep).
 
-## 1. Connect your EIQ data first
+> A visual step-by-step guide with screenshots is provided separately (`install-guide.html`). This README is the written version.
 
-The console is built from your **EIQ Manager** connector(s) — each connected business becomes a brand on the console. Attach the connector in Claude before using it:
+---
 
-- Open **Claude -> Settings -> Connectors** (under **Customize**).
-- Add the **EIQ Manager** connector and authorise it. It signs in to your Evolvepreneur account (evolvepreneuriq.app) via OAuth — you approve it in the popup; there are no keys to paste.
-- Add one connector per business you want on the console (Evolvepreneur, Evolve Systems, Get My Book, and so on).
+## What you need
 
-Without a connector attached the console still opens, but the EIQ Connector and Personas tabs and the data actions have nothing to read.
+- **A Claude account.** Required for every method below.
+- **The EIQ Manager connector** attached for each business you want on the console (see *Connect your EIQ data*). Without it the console still opens, but the EIQ Connector, Personas and data tabs have nothing to read.
+- **A GitHub login is ONLY needed for Method B (the marketplace).** Method A (uploading the file) needs no GitHub at all.
 
-## 2. Install the plugin
+---
 
-**On Claude desktop / claude.ai — no terminal:**
+## Install — pick ONE method
 
-1. Open **Settings -> Customize -> Plugins**.
+### Method A — Upload the plugin file  (simplest, no GitHub)
+
+Best for non-technical users, or anyone who doesn't want to connect GitHub.
+
+1. Get the plugin file from whoever shared it: **`evolvepreneuriq-console.zip`**.
+2. In Claude, open **Settings -> Plugins**.
+3. Top right, click **Add -> Upload plugin**.
+4. Choose the `evolvepreneuriq-console.zip` file. It installs right away.
+
+*Updates:* to move to a newer version, upload the new zip the same way. (No automatic updates with this method.)
+
+### Method B — Add the marketplace from GitHub  (auto-updates, needs GitHub)
+
+Best if you want the plugin to update itself when a new version is published.
+
+1. In Claude, open **Settings -> Plugins**.
 2. Top right, click **Add -> Add marketplace -> Add from a repository**.
-3. In the URL box, type **evolvesystems/evolvepreneuriq-plugins** and pick it from the list (a GitHub `owner/repo` or a full git URL both work). Leave **Sync automatically** on and click **Sync**.
-4. In the directory that opens, on the **Personal** tab, click the **+** on the **Evolvepreneuriq console** card to install it.
-5. If a banner asks to grant the Claude GitHub App access to the repo, click **Grant access** and approve — that's what keeps it auto-updating.
+3. **The first time, Claude asks you to connect / sign in to GitHub.** This is required for this method (even though the repo is public).
+4. Type **evolvesystems/evolvepreneuriq-plugins** (or paste `https://github.com/evolvesystems/evolvepreneuriq-plugins`), select it, leave **Sync automatically** on, and click **Sync**.
+5. In the directory that opens, on the **Personal** tab, click the **+** on the **Evolvepreneuriq console** card.
 
-**In Claude Code — terminal:**
+*Updates:* automatic — a version bump on GitHub syncs to you on its own.
+
+### Method C — Claude Code (terminal)
+
+For developers who prefer the command line:
 
 ```
 /plugin marketplace add https://github.com/evolvesystems/evolvepreneuriq-plugins.git
 /plugin install evolvepreneuriq-console@evolvepreneuriq
 ```
 
-## 3. Build your console
+---
 
-Say **"set up my console"** — that confirms your businesses, sets up your automations, and builds the console. Reopen it any time from your artifact gallery, or say **"rebuild my console"** to refresh it from live EIQ data.
+## Connect your EIQ data  (once, for any method)
 
-## Updating
+The console is built from your **EIQ Manager** connector(s) — each connected business becomes a brand on the console.
 
-With **Sync automatically** on, new versions flow through when the repo's version is bumped — no reinstall. You can also refresh manually from the Plugins page.
+1. In Claude, open **Settings -> Connectors**.
+2. Add the **EIQ Manager** connector and authorise it. It signs in to your Evolvepreneur account (evolvepreneuriq.app) via OAuth — you approve it in a popup; there are no keys to paste.
+3. Add one connector per business you want on the console.
 
-## What's inside
+---
 
-- `plugins/evolvepreneuriq-console/` — the plugin: a console-generator skill and a first-run console-setup skill
-- `.claude-plugin/marketplace.json` — the marketplace catalog
+## Use it
+
+After installing and connecting, say **"set up my console"** in a chat. It confirms your businesses, sets up any automations you choose, and builds the console. Reopen it any time from your **Artifacts**, or say **"rebuild my console"** to refresh it from live EIQ data.
+
+---
+
+## What's in this repo
+
+- `plugins/evolvepreneuriq-console/` — the plugin: a console-generator skill, a first-run console-setup skill, and the console template.
+- `.claude-plugin/marketplace.json` — the marketplace catalog.
+- `SECURITY.md` — secret-hygiene notes (this repo contains no credentials).
