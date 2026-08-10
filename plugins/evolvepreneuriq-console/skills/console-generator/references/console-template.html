@@ -147,8 +147,9 @@ const CONFIG={
   businessName:'Your Business',                 // active business shown in the header
   businesses:['Your Business'],                 // switcher list — one per connected tenant
   site:'https://evolvepreneuriq.app',
-  version:'0.2.0',
-  updatesUrl:'',                                 // where 'check for updates' points (defaults to site)
+  version:'0.3.0',
+  updatesUrl:'https://github.com/evolvesystems/evolvepreneuriq-plugins',  // where 'check for updates' points
+  updatesFeed:'https://cdn.jsdelivr.net/gh/evolvesystems/evolvepreneuriq-plugins@main/version.json', // polled on load; shows 'update available' if newer
   sections:[                                     // top-nav shortcuts → generic platform paths
     ['Workspace','workspace'],['CRM','crm-marketing#contacts'],['Media Studio','media-studio'],
     ['Commerce','ecommerce'],['Analytics','admin/analytics'],['Comms Hub','communication-hub'],
@@ -163,6 +164,8 @@ const BRANDS = { all:{name:"All", color:"#7c8aa5"} };
 /* ---------- lanes ---------- */
 const LANES = [
   {id:"write",   name:"Write & Voice",       color:"#8b5cf6"},
+  {id:"brain",   name:"Business Brain",      color:"#14b8a6"},
+  {id:"train",   name:"Train & Improve",     color:"#a855f7"},
   {id:"outreach",name:"Outreach & Sales",    color:"#f43f5e"},
   {id:"content", name:"Content & Repurpose", color:"#f59e0b"},
   {id:"build",   name:"Build & Publish",     color:"#22d3ee"},
@@ -342,7 +345,41 @@ const ACTIONS = [
 
   {id:"persona",lane:"ops",title:"Adopt an EIQ persona",desc:"Work as a specialised EIQ VA (Sales Assistant, Leverage Audit...).",skill:"eiq-personas",brands:["all"],
    fields:{persona:txt("Which persona / goal","e.g. run the Brutal Leverage Audit")},
-   template:v=>`Adopt the EIQ persona for: ${v.persona||"[persona or goal]"}. Fetch its system prompt from the skill library and work in that role (eiq-personas).`}
+   template:v=>`Adopt the EIQ persona for: ${v.persona||"[persona or goal]"}. Fetch its system prompt from the skill library and work in that role (eiq-personas).`},
+
+  /* BUSINESS BRAIN — the context files that make it sound like you and get smarter over time */
+  {id:"brain-voice",lane:"brain",title:"Build my voice file",desc:"Turn 5–10 things you've written into a reusable style guide it follows every time.",skill:"brand-voice · human-voice-writer",brands:["all"],
+   fields:{biz:sel("Business",BIZ),samples:area("Paste 5–10 things you wrote and liked","Old emails, posts, pages — anything with your fingerprints on it...")},
+   template:v=>`Here are a few things I wrote for ${v.biz}. Study them and describe how I write: tone, sentence length, words I use, words I would never use. Save that as my voice/style guide for ${v.biz} and follow it every time you write for me. Then show it to me so I can correct anything you got wrong — those corrections are the real value.\n\n${v.samples||"[paste 5–10 writing samples here]"}`},
+
+  {id:"brain-offers",lane:"brain",title:"Build my offers file",desc:"Every offer written down — price, promise, who it's for and who it isn't.",skill:"eiq-business-planning",brands:["all"],
+   fields:{biz:sel("Business",BIZ),offer:txt("Which offer (or 'all')","e.g. the done-for-you package")},
+   template:v=>`Help me write an offers file for ${v.biz}. For ${v.offer||"each offer"}: the price, the promise, who it's for, who it is NOT for, and the main objections with my answers. Interview me with the AskUserQuestion tool for anything you don't already know, then save it as the offers file for ${v.biz}.`},
+
+  {id:"brain-audience",lane:"brain",title:"Build my audience file",desc:"Who you're really talking to — in their words, not demographics.",skill:"eiq-commercial-analysis",brands:["all"],
+   fields:{biz:sel("Business",BIZ),who:txt("Which buyer type","e.g. self-published authors")},
+   template:v=>`Help me write an audience file for ${v.who||"my main buyer"} at ${v.biz} — not demographics: what keeps them up at night, what they've already tried, what they'd say out loud in a bar. Interview me with the AskUserQuestion tool to pull it out of my head, then save it. Where I have EIQ data on these people, use it too.`},
+
+  {id:"brain-lesson",lane:"brain",title:"Bank a lesson",desc:"Turn a correction into a permanent rule so it never happens again.",skill:"lessons file",brands:["all"],
+   fields:{lesson:txt("What it should always / never do from now on","e.g. never open an email with a question")},
+   template:v=>`Add this to my lessons file as a standing rule, applied before anything gets written from now on: ${v.lesson||"[the correction]"}. If it belongs to a specific skill, update that skill too so it comes out right on the first try.`},
+
+  /* TRAIN & IMPROVE — the loop: fix the process, not the output */
+  {id:"train-edit",lane:"train",title:"Learn from my edit",desc:"After you edit a draft, make the fix permanent instead of doing it again next time.",skill:"the loop",brands:["all"],
+   fields:{what:txt("What you just edited","e.g. this week's newsletter")},
+   template:v=>`I just edited your draft of ${v.what||"this"}. Compare my version with yours, work out what I changed and why, then update the skill so next time it comes out my way on the first try. Tell me the change you're baking in before you save it — don't guess at my reasons.`},
+
+  {id:"train-interview",lane:"train",title:"Interview me before building",desc:"Stop it guessing what you meant — make it ask first.",skill:"the loop",brands:["all"],
+   fields:{task:txt("What you want built","e.g. a launch email sequence")},
+   template:v=>`Before you build ${v.task||"this"}, interview me in detail using the AskUserQuestion tool — decisions, concerns, tradeoffs. Make the questions non-obvious, go in-depth, and keep interviewing me until it's complete. I'll answer honestly, including "I don't know." Then save my answers to my brain so we never do this same interview again.`},
+
+  {id:"train-approvals",lane:"train",title:"Turn approvals into training data",desc:"Mine your yes/no/edit decisions into permanent improvements. Run every week or two.",skill:"the loop",brands:["all"],
+   fields:{period:sel("Look back over",["the past two weeks","the past week","the past month"])},
+   template:v=>`Go through everything I approved, rejected or edited over ${v.period}. Work out what I keep changing. Ask me about the unclear ones with the AskUserQuestion tool — don't guess my reasons. Then update the skills so I see more of what I approve and less of what I don't.`},
+
+  {id:"train-process",lane:"train",title:"Fix the process, not the output",desc:"Aim a fix at the recipe so every future output improves, not just this one.",skill:"the loop",brands:["all"],
+   fields:{fix:txt("The fix you keep making","e.g. make it shorter"),where:txt("On what kind of work","e.g. every newsletter")},
+   template:v=>`Don't just fix this one output. ${v.fix||"[the change]"} — and update the skill for ${v.where||"this kind of work"} so it's always this way from now on. I want the next one right before I even look at it.`}
 ];
 
 /* ---------- EIQ Skill Library (82 platform personas, adopted via eiq-personas) ---------- */
@@ -685,12 +722,33 @@ function howtoBody(){
       +'<div class="wstep"><span class="wsnum">3</span><div><b>Paste it and send.</b> Claude runs it against your live EIQ — pulling real data and, where you ask, <b>drafting and creating</b> right in your modules.</div></div>'
     +'</div>'
     +'<div class="wsnote"><b>Connected LIVE to your EIQ tenant.</b> Claude can read your CRM, inbox, accounting and more, and <b>create or update</b> real items — a newsletter into the newsletter module, an email campaign as a draft, a task, a doc in EvolveDocs. Anything that would <b>send, publish or spend is left as a draft for you to approve</b> — never fired off on its own.</div>'
+    +'<div class="wstablabel">Safe by default</div>'
+    +'<div class="wstabs">'
+      +'<div class="wstab"><span class="k">Drafts wait</span><div>Nothing publishes itself — every draft waits for your yes or no.</div></div>'
+      +'<div class="wstab"><span class="k">Ads paused</span><div>Ad creative is built and uploaded <b>paused</b> — not a cent spends until you press go.</div></div>'
+      +'<div class="wstab"><span class="k">Email never auto-sends</span><div>It lands as a draft in your email tool. You press send.</div></div>'
+      +'<div class="wstab"><span class="k">Never invents a fact</span><div>If it isn&rsquo;t sure of something it writes PLACEHOLDER and asks — no made-up numbers.</div></div>'
+    +'</div>'
+    +'<div class="wstablabel">Get more out of it</div>'
+    +'<div class="wstabs">'
+      +'<div class="wstab"><span class="k">10-80-10</span><div>You brief it (first 10%), it does the work (80%), you approve (last 10%). The two tens are the parts that needed a human anyway.</div></div>'
+      +'<div class="wstab"><span class="k">Talk, don&rsquo;t type</span><div>Speak your request instead of typing — the rambling gives it about 3&times; the context, and more context in means better work out.</div></div>'
+      +'<div class="wstab"><span class="k">Fix the process</span><div>Don&rsquo;t fix the draft — say what you changed and update the skill, so the next one is right before you look at it. (See the <b>Train &amp; Improve</b> commands.)</div></div>'
+      +'<div class="wstab"><span class="k">Build smart, run cheap</span><div>Use the smart model to build or rewrite a skill; run everyday output on the fast one. The thinking is worth paying for, the typing isn&rsquo;t.</div></div>'
+    +'</div>'
     +'<div class="wstablabel">What each tab is for</div>'
     +'<div class="wstabs">'
       +'<div class="wstab"><span class="k">Workflows</span><div>Ready-made tasks across your business — each opens a builder that writes the prompt for you.</div></div>'
       +'<div class="wstab"><span class="k">Skills</span><div>The specialist abilities Claude brings to a job — brand voice, de-slop editing, buyer analysis and more.</div></div>'
       +'<div class="wstab"><span class="k">EIQ Connector</span><div>Your live EIQ modules — CRM, accounting, inbox, newsletter, EvolveDocs, pages, SQL — that Claude can read and write.</div></div>'
       +'<div class="wstab"><span class="k">Personas</span><div>The EIQ VA personas from your skill library that Claude can adopt for a task.</div></div>'
+    +'</div>'
+    +'<div class="wstablabel">EIQ Connector — setup &amp; help</div>'
+    +'<div class="wstabs">'
+      +'<div class="wstab"><span class="k">Connect</span><div>Settings &rarr; Connectors &rarr; add <b>EIQ Manager</b> and approve the sign-in (evolvepreneuriq.app). One connector per business — no keys to paste.</div></div>'
+      +'<div class="wstab"><span class="k">Reconnect</span><div>If the Connector, Personas or data tabs come back empty, re-authorise <b>EIQ Manager</b> in Settings &rarr; Connectors.</div></div>'
+      +'<div class="wstab"><span class="k">Add a business</span><div>Add another EIQ Manager connector, then rebuild — it appears in the switcher and in the Business field on every command.</div></div>'
+      +'<div class="wstab"><span class="k">Refresh</span><div>After connecting, reconnecting or updating, say <b>&ldquo;rebuild my console&rdquo;</b> to pull the latest data and tools.</div></div>'
     +'</div>'
   +'</div>';
 }
@@ -740,7 +798,19 @@ function bizMenu(){
 function closeBiz(e){const m=document.getElementById('bizmenu');if(m&&!m.contains(e.target)){m.remove();document.removeEventListener('click',closeBiz);}}
 applyConfig();
 document.getElementById('themeBtn').onclick=function(){var d=document.documentElement;var dark=d.getAttribute('data-theme')==='dark';d.setAttribute('data-theme',dark?'':'dark');this.innerHTML=dark?'&#9790;':'&#9728;';this.title=dark?'Dark mode':'Light mode';};
-document.getElementById('verInfo').innerHTML='<a href="'+(CONFIG.updatesUrl||CONFIG.site)+'" target="_blank" rel="noopener" title="Updates install automatically via your plugin">&#8635; v'+CONFIG.version+'</a>';
+function cmpVer(a,b){var A=String(a).split('.').map(Number),B=String(b).split('.').map(Number);for(var i=0;i<3;i++){if((A[i]||0)>(B[i]||0))return 1;if((A[i]||0)<(B[i]||0))return -1;}return 0;}
+(function(){
+  var cur=CONFIG.version, el=document.getElementById('verInfo'), url=CONFIG.updatesUrl||CONFIG.site;
+  el.innerHTML='<a href="'+url+'" target="_blank" rel="noopener" title="You&rsquo;re on v'+cur+' — click for updates">&#8635; v'+cur+'</a>';
+  if(!CONFIG.updatesFeed) return;
+  try{
+    fetch(CONFIG.updatesFeed,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+      if(j&&j.version&&cmpVer(j.version,cur)>0){
+        el.innerHTML='<a href="'+url+'" target="_blank" rel="noopener" style="color:#f59e0b;font-weight:700" title="'+((j.notes||'A newer version is available').replace(/"/g,"&quot;"))+'">&#8593; Update available · v'+j.version+'</a>';
+      }
+    }).catch(function(){});
+  }catch(e){}
+})();
 document.getElementById('helpBtn').onclick=openHelp;
 document.getElementById('workspace').innerHTML=emptyWs();wireEmpty();
 renderMenu();
