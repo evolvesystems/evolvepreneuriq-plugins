@@ -8,8 +8,8 @@
     {
       "name": "evolvepreneuriq-console",
       "source": "./plugins/evolvepreneuriq-console",
-      "version": "0.2.0",
-      "description": "Evolvepreneur®iQ Workplace (v0.2.0) — a white-label, connector-driven AI operator console. Builds a two-panel dashboard (Workflows, Cowork Skills, all EIQ Connector tools, and the EIQ persona library) personalised to each client's connected businesses, with dark mode and first-run setup for standing automations."
+      "version": "0.3.0",
+      "description": "Evolvepreneur®iQ Workplace (v0.3.0) — a white-label, connector-driven AI operator console. Two-panel dashboard: Workflows (incl. a Business Brain lane and a Train & Improve lane that turns your edits into permanent improvements), Cowork Skills, all EIQ Connector tools, and the EIQ persona library — personalised per client, with dark mode, safe-by-default guardrails, an in-dashboard update check, and first-run setup for standing automations."
     }
   ]
 }
