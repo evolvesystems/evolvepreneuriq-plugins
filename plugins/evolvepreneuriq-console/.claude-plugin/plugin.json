@@ -1,7 +1,7 @@
 {
   "name": "evolvepreneuriq-console",
-  "version": "0.4.1",
-  "description": "Evolvepreneur®iQ Workplace (v0.4.1) — a white-label, connector-driven AI operator console. Tabs: Workflows (incl. a Business Brain lane and a Train & Improve lane that turns your edits into permanent improvements), Skills, the EIQ Connector catalogue, the EIQ persona library, and a live Dashboard tab (revenue, customers, finance & P&L, sales pipeline, subscriptions, royalties and website traffic — built connector-driven from your EIQ tenants with a consolidated Group view). Personalised per client, with dark mode, safe-by-default guardrails, an in-dashboard update check, and first-run setup for standing automations.",
+  "version": "0.4.2",
+  "description": "Evolvepreneur®iQ Workplace (v0.4.2) — a white-label, connector-driven AI operator console. Tabs: Workflows (incl. a Business Brain lane and a Train & Improve lane that turns your edits into permanent improvements), Skills, the EIQ Connector catalogue, the EIQ persona library, and a live Dashboard tab (revenue, customers, finance & P&L, sales pipeline, subscriptions, royalties and website traffic — built connector-driven from your EIQ tenants with a consolidated Group view). Personalised per client, with dark mode, safe-by-default guardrails, an in-dashboard update check, and first-run setup for standing automations.",
   "author": {
     "name": "Evolve Systems Group"
   },
