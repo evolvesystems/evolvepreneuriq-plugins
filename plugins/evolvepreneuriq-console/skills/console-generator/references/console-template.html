@@ -166,7 +166,7 @@ const CONFIG={
   businessName:'Your Business',                 // active business shown in the header
   businesses:['Your Business'],                 // switcher list — one per connected tenant
   site:'https://evolvepreneuriq.app',
-  version:'0.4.0',
+  version:'0.4.1',
   updatesUrl:'https://github.com/evolvesystems/evolvepreneuriq-plugins',  // where 'check for updates' points
   updatesFeed:'https://cdn.jsdelivr.net/gh/evolvesystems/evolvepreneuriq-plugins@main/version.json', // polled on load; shows 'update available' if newer
   sections:[                                     // top-nav shortcuts → generic platform paths
@@ -841,7 +841,7 @@ function cmpVer(a,b){var A=String(a).split('.').map(Number),B=String(b).split('.
 (function(){
   var cur=CONFIG.version, el=document.getElementById('verInfo'), url=CONFIG.updatesUrl||CONFIG.site;
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  var st=document.createElement('style');st.textContent='.upmodal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:9999}.upcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:470px;width:92%;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.32)}.uphead{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}.uphead b{flex:1;font-size:15px;color:var(--ink)}.upbadge{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:#f59e0b;padding:3px 8px;border-radius:20px}.upx{cursor:pointer;color:var(--muted);font-size:20px;line-height:1}.upnotes{padding:14px 18px 0;margin:0;font-size:13px;color:var(--text2);line-height:1.55}.upsteps{padding:12px 18px 4px}.upcap{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:6px}.upsteps ol{margin:0;padding-left:18px}.upsteps li{font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:7px}.upfoot{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--line);margin-top:8px}.upfoot a{font-size:12.5px;color:#6a24c8;text-decoration:none;font-weight:600}.upok{border:0;background:#6a24c8;color:#fff;font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:9px;cursor:pointer}';document.head.appendChild(st);
+  var st=document.createElement('style');st.textContent='.upmodal{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:9999}.upcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:470px;width:92%;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.32)}.uphead{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}.uphead b{flex:1;font-size:15px;color:var(--ink)}.upbadge{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#fff;background:#f59e0b;padding:3px 8px;border-radius:20px}.upx{cursor:pointer;color:var(--muted);font-size:20px;line-height:1}.upnotes{padding:14px 18px 0;margin:0;font-size:13px;color:var(--text2);line-height:1.55}.upsteps{padding:12px 18px 4px}.upcap{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:6px}.upsteps ol{margin:0;padding-left:18px}.upsteps li{font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:7px}.upfoot{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid var(--line);margin-top:8px}.upfoot a{font-size:12.5px;color:#6a24c8;text-decoration:none;font-weight:600}.upok{border:0;background:#6a24c8;color:#fff;font-weight:700;font-size:12.5px;padding:8px 15px;border-radius:9px;cursor:pointer}#upbar{position:fixed;right:18px;bottom:18px;z-index:9998;display:none;align-items:center;gap:12px;background:#f59e0b;color:#3a2a00;padding:10px 12px 10px 16px;border-radius:12px;box-shadow:0 12px 34px rgba(0,0,0,.28);font-size:13px;font-weight:600;max-width:calc(100vw - 36px)}#upbar .ic{font-size:15px}#upbar .b{background:#fff;color:#7a4b00;border:0;border-radius:8px;padding:6px 11px;font-weight:700;cursor:pointer;font-size:12px;white-space:nowrap}#upbar .x{cursor:pointer;opacity:.65;font-size:17px;line-height:1;padding:0 2px}#upbar .x:hover{opacity:1}';document.head.appendChild(st);
   function showUpdate(ver,notes){
     var m=document.getElementById('upmodal'); if(m)m.remove();
     var ov=document.createElement('div'); ov.id='upmodal'; ov.className='upmodal';
@@ -862,16 +862,42 @@ function cmpVer(a,b){var A=String(a).split('.').map(Number),B=String(b).split('.
     ov.querySelector('.upx').onclick=close; ov.querySelector('.upok').onclick=close;
   }
   window.renderUpdatePrompt=showUpdate; /* testable hook */
-  el.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" title="You&rsquo;re on v'+esc(cur)+' — click for updates">&#8635; v'+esc(cur)+'</a>';
-  if(!CONFIG.updatesFeed) return;
-  try{
-    fetch(CONFIG.updatesFeed,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
-      if(j&&j.version&&cmpVer(j.version,cur)>0){
-        el.innerHTML='<a href="#" style="color:#f59e0b;font-weight:700" title="What&rsquo;s new &amp; how to update">&#8593; Update available &middot; v'+esc(j.version)+'</a>';
-        var a=el.querySelector('a'); if(a)a.onclick=function(e){e.preventDefault();showUpdate(j.version,j.notes||'A newer version is available.');};
+
+  /* persistent, dismissable "update ready" bar + periodic re-check */
+  var latest=null, latestNotes='', dismissed=null, bar=null;
+  function pill(){
+    if(latest && cmpVer(latest,cur)>0){
+      el.innerHTML='<a href="#" style="color:#f59e0b;font-weight:700" title="What&rsquo;s new &amp; how to update">&#8593; Update available &middot; v'+esc(latest)+'</a>';
+      var a=el.querySelector('a'); if(a)a.onclick=function(e){e.preventDefault();showUpdate(latest,latestNotes);};
+    } else {
+      el.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" title="You&rsquo;re on v'+esc(cur)+' — click for updates">&#8635; v'+esc(cur)+'</a>';
+    }
+  }
+  function paintBar(){
+    var want = latest && cmpVer(latest,cur)>0 && dismissed!==latest;
+    if(want){
+      if(!bar){
+        bar=document.createElement('div'); bar.id='upbar';
+        bar.innerHTML='<span class="ic">&#8593;</span><span>Update ready &middot; v<span id="upbarver"></span></span><button class="b">What&rsquo;s changed</button><span class="x" title="Dismiss">&times;</span>';
+        document.body.appendChild(bar);
+        bar.querySelector('.b').onclick=function(){showUpdate(latest,latestNotes);};
+        bar.querySelector('.x').onclick=function(){dismissed=latest;paintBar();};
       }
-    }).catch(function(){});
-  }catch(e){}
+      bar.querySelector('#upbarver').textContent=latest;
+      bar.style.display='flex';
+    } else if(bar){ bar.style.display='none'; }
+  }
+  function check(){
+    if(!CONFIG.updatesFeed) return;
+    try{
+      fetch(CONFIG.updatesFeed,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+        if(j&&j.version){ latest=j.version; latestNotes=j.notes||'A newer version is available.'; pill(); paintBar(); }
+      }).catch(function(){});
+    }catch(e){}
+  }
+  pill(); check();
+  setInterval(check, 20*60*1000);                 /* re-poll every 20 min */
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) check(); });  /* and when the tab is refocused */
 })();
 document.getElementById('helpBtn').onclick=openHelp;
 document.getElementById('workspace').innerHTML=emptyWs();wireEmpty();
