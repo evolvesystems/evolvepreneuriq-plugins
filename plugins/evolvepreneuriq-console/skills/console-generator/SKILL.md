@@ -9,12 +9,13 @@ Regenerate the Evolvepreneur iQ Console and deliver it to the user.
 
 ## What the console is
 
-A single self-contained HTML dashboard with four tabs:
+A single self-contained HTML dashboard with five tabs:
 
 - **Workflows** — ready-made task cards across the user's businesses; each opens a builder that assembles a tailored prompt to paste back into Cowork.
 - **Skills** — the installed Cowork skills, grouped by type.
 - **EIQ Connector** — the real EIQ connector tools/modules (from `eiq_about`): accounting, CRM, inbox, EvolveDocs, Page Builder, YouTube, SQL and the rest, each scoped to a business.
 - **Personas** — the EIQ skill-library VA personas, filterable by business.
+- **Dashboard** — a live business dashboard (revenue, customers, finance & P&L, sales pipeline, subscriptions, royalties, website traffic) built connector-driven from the EIQ tenants, with a consolidated Group view. Ships empty; populated on request (see "The Dashboard tab" below).
 
 A brand filter (one chip per active business) sits over the Workflows and Personas tabs. Each card copies a ready-to-run prompt to the clipboard.
 
@@ -41,6 +42,22 @@ A brand filter (one chip per active business) sits over the Workflows and Person
 5. **Deliver and persist.**
    - Write the final HTML to a file and send it with `SendUserFile` (display: render).
    - Then persist it with `mcp__remote-devices__create_artifact` (or `update_artifact` if an artifact named `evolve-console` already exists) using the `file_uuid` from `SendUserFile`, so it lives in the user's artifact gallery and updates in place.
+
+## The Dashboard tab (v0.4.0+)
+
+The template ships a fifth tab, **Dashboard**, plus a "Dashboard & Data" prompt-card lane in Workflows. The Dashboard renders charts and KPIs from a small set of data globals; the engine (`references/dash_engine.js`, already inlined in the template) is fully data-driven and connector-driven. With no data present it shows a "Dashboard not built yet" empty state — which is the correct state for the shipped template.
+
+To populate it for a client, when they ask to "refresh my dashboard from EIQ":
+
+1. For each connected EIQ tenant, pull only what its connector returns: `get_revenue_summary`, `get_customer_analytics`, `eiq_accounting` (pnl + ar_aging), `eiq_deal` (pipeline_summary), `get_subscription_health`, `eiq_royalty` (summary + by_platform), `eiq_analytics`. Do not invent figures; if a module returns nothing, omit that section for that tenant.
+2. Assemble the data globals and inject them into the delivered HTML, immediately **before** the dashboard engine block:
+   - `EIQ` — `{ tenantKey: { name, color, has:{finance,pipeline,subs,royalties}, rev:{fyRev,fyExp,fyNet,ytd,ytdOrders,lastMonth,lastMonthOrders}, cust:{total,avgLtv,oneOff,oneOffPct,totalLtv,top:[[name,orders,lifetime]],newByYear:{l,v},nvr:{l,nw,rt},ltvBuckets:{l,v},ordBuckets:{l,v}}, finance:{ar,arCount,revTop:[[label,amt]],expTop:[[label,amt]]}, pipeline:{total,pipelineValue,openCount,openValue,wonValue,lostValue,winRateVal,stages:[[stage,count,value]]}, subs:{active,mrr,ccy,churn,note}, roy:{gross,supplier,units,txns,payTotal,payCount,platforms:[[name,gross,units]]} } }`
+   - `EIQGROUP` — `{ brands:[[key,label,lifetimeAUD,customers,color]], totalCust, totalLtv }` (consolidated roll-up).
+   - Money is settled AUD from customer-analytics; where a tenant's `last_month.aud_total` is 0 because FX hasn't synced, set `lastMonth:0` (the engine shows an order count instead of a misleading $0). Keep `totalLtv` equal to the sum of the per-tenant bars.
+   - An optional legacy `EP v1` source is supported via `GROUP`/`BR`/`TR`/`ESGX` globals; omit them unless the client explicitly has that dataset.
+3. Sections appear only where the data exists — the engine derives the brand list and section list from what you inject. Validate (below), then deliver.
+
+**Data safety — non-negotiable.** Real client figures, customer names and emails live **only** in the client's delivered artifact, never in this plugin repo. Never commit populated data globals, a filled-in `console_dash.html`, or any client numbers back to the marketplace repo. The repo template must always ship with the empty-state Dashboard and zero client data.
 
 ## Notes
 
