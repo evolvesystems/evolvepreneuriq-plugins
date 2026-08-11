@@ -1,6 +1,6 @@
 {
-  "version": "0.4.1",
+  "version": "0.4.2",
   "released": "2026-08-11",
-  "notes": "Update experience: the console now shows a persistent, dismissable “Update ready” bar and re-checks for new versions while it's open, with a one-click card explaining what changed and how to apply it. Builds on v0.4.0's live Dashboard tab.",
+  "notes": "Fix: “rebuild my console” now reliably fetches the newest template from the CDN (a wrong path meant rebuilds silently used the older bundled copy). Combined with the persistent update prompt from 0.4.1, updates now flow to a rebuild without needing a restart.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

@@ -2,6 +2,16 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.2 — 2026-08-11
+
+### Fixed
+- **"Rebuild my console" now fetches the newest template from the CDN.** The generator's
+  fetch URL was missing the `skills/console-generator/` path segment, so the fetch silently
+  404'd and every rebuild fell back to the template *bundled in the installed plugin* — which
+  only updates after a sync **and** a restart. With the path corrected, a rebuild pulls the
+  latest published template directly, so updates reach the console without a restart. (This is
+  why a rebuild could still show the old console right after an update.)
+
 ## v0.4.1 — 2026-08-11
 
 ### Added
