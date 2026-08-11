@@ -1,8 +1,16 @@
 # Evolvepreneur iQ — plugin marketplace
 
-This repo hosts the **Evolvepreneur®iQ Workplace** plugin — a white-label, connector-driven AI operator console. It's a single-page dashboard with four tabs (Workflows, your Cowork Skills, the live EIQ Connector tools, and your EIQ persona library), plus a first-run setup skill that can create standing automations (morning brief, weekly prospect dig, overdue-invoice sweep).
+This repo hosts the **Evolvepreneur®iQ Workplace** plugin — a white-label, connector-driven AI operator console. It's a single-page dashboard with five tabs (Workflows, your Cowork Skills, the live EIQ Connector tools, your EIQ persona library, and a live **Dashboard**), plus a first-run setup skill that can create standing automations (morning brief, weekly prospect dig, overdue-invoice sweep).
 
 > A visual step-by-step guide with screenshots is provided separately (`install-guide.html`). This README is the written version.
+
+---
+
+## What's new in v0.4.0
+
+A live **Dashboard** tab. It reads your EIQ tenants and shows revenue, customers, finance & P&L, sales pipeline, subscriptions, royalties and website traffic, with a consolidated **Group** view across every connected business. It's **connector-driven** — a section only appears for a tenant when that tenant's connector actually returns the data — and it ships empty, then fills in when you ask.
+
+To get it after updating: **"rebuild my console"**, then **"refresh my dashboard from EIQ"**. (See *Update the plugin* below.) No business data is stored in this repo — the Dashboard is built into your own private console artifact only. Full history in [`CHANGELOG.md`](./CHANGELOG.md).
 
 ---
 
