@@ -18,26 +18,15 @@ To get it after updating: **"rebuild my console"**, then **"refresh my dashboard
 
 - **A Claude account.** Required for every method below.
 - **The EIQ Manager connector** attached for each business you want on the console (see *Connect your EIQ data*). Without it the console still opens, but the EIQ Connector, Personas and data tabs have nothing to read.
-- **A GitHub login is ONLY needed for Method B (the marketplace).** Method A (uploading the file) needs no GitHub at all.
+- **A GitHub login is only needed for Method A (the marketplace).** Method B (uploading the file) needs no GitHub at all.
 
 ---
 
 ## Install — pick ONE method
 
-### Method A — Upload the plugin file  (simplest, no GitHub, always works)
+### Method A — Add the marketplace from GitHub  (recommended — auto-updates)
 
-Best for non-technical users, or anyone who doesn't want to connect GitHub.
-
-1. Get the plugin file from whoever shared it: **`evolvepreneuriq-console.zip`**.
-2. In Claude, open **Settings -> Plugins**.
-3. Top right, click **Add -> Upload plugin**.
-4. Choose the `evolvepreneuriq-console.zip` file. It installs right away.
-
-*Updates:* to move to a newer version, upload the new zip the same way. (No automatic updates with this method — but it's instant and never gets stuck on a cache.)
-
-### Method B — Add the marketplace from GitHub  (auto-updates, needs GitHub)
-
-Best if you want the plugin to update itself when a new version is published.
+Best for almost everyone: the plugin keeps itself up to date when a new version is published, and the console will prompt you when there's an update.
 
 1. In Claude, open **Settings -> Plugins**.
 2. Top right, click **Add -> Add marketplace -> Add from a repository**.
@@ -45,7 +34,18 @@ Best if you want the plugin to update itself when a new version is published.
 4. Type **evolvesystems/evolvepreneuriq-plugins** (or paste `https://github.com/evolvesystems/evolvepreneuriq-plugins`), select it, leave **Sync automatically** on, and click **Sync**.
 5. In the directory that opens, on the **Personal** tab, click the **+** on the **Evolvepreneuriq console** card.
 
-*Updates:* automatic — a version bump on GitHub syncs to you on its own. See **Update the plugin** below if a new version is slow to appear.
+*Updates:* automatic — a version bump on GitHub syncs to you. See **Updating — step by step** below.
+
+### Method B — Upload the plugin file  (no GitHub required)
+
+Best if you can't or don't want to connect GitHub.
+
+1. Get the plugin file from whoever shared it: **`evolvepreneuriq-console.zip`**.
+2. In Claude, open **Settings -> Plugins**.
+3. Top right, click **Add -> Upload plugin**.
+4. Choose the `evolvepreneuriq-console.zip` file. It installs right away.
+
+*Updates:* none automatically with this method — to move to a newer version, upload the new zip the same way.
 
 ### Method C — Claude Code (terminal)
 
@@ -76,19 +76,24 @@ After installing and connecting, say **"set up my console"** in a chat. It confi
 
 ## Update, refresh & reconnect
 
-### Update the plugin to a new version
+### Updating — step by step
 
-**Marketplace (Method B).** A version bump on GitHub is meant to sync to you automatically. If a new version is slow to appear (the plugin still shows the old description or an old "Last updated" date):
+When a new version is published, your console shows an amber **"Update ready"** bar (bottom-right) and an **"↑ Update available"** link in the footer — click either for the notes. To apply it:
+
+1. **Update the plugin.** **Settings -> Plugins**, open the **evolvepreneuriq-plugins** marketplace, make sure **Sync automatically** is on, and click **Check for updates**.
+2. **Restart Claude.** Fully quit and reopen — this is the step people skip, and it's the usual reason an update "doesn't take."
+3. In a chat, say **"rebuild my console."**
+4. Then say **"refresh my dashboard from EIQ."**
+5. Open the console from **Artifacts** — the update is applied and the Dashboard shows your numbers.
+
+*Prerequisite for the data:* the **EIQ Manager** connector must be attached for the businesses you want on the console (see *Connect your EIQ data*). Without it the console still builds, but the Dashboard and Connector tabs have nothing to read.
+
+### If an update is slow to appear
+
+A version bump should sync on its own. If the plugin still shows an old version or "Last updated" date:
 
 1. Fully **quit and reopen Claude** — a cold start forces a fresh fetch from GitHub. This clears most cases.
-2. If it still hasn't updated, the marketplace fetch is cached on Claude's side. Use the manual route below to install the new version immediately — it bypasses the cache entirely.
-
-**Manual (Method A) — the guaranteed way.**
-
-1. **Settings -> Plugins**, click **Evolvepreneuriq console**, then the **⋮** (top right) -> **Uninstall**.
-2. **Add -> Upload plugin**, choose the new `evolvepreneuriq-console.zip`.
-
-This installs the exact version in the file, no sync, no waiting.
+2. If it still hasn't updated, the marketplace fetch is cached on Claude's side. Install the new version manually to bypass the cache: **Settings -> Plugins**, open **Evolvepreneuriq console**, **⋮ -> Uninstall**, then **Add -> Upload plugin** and choose the new `evolvepreneuriq-console.zip`.
 
 ### Refresh the console & skills
 
