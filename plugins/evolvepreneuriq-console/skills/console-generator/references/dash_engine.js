@@ -11,6 +11,7 @@
   function G(n){ try{ return (0,eval)(n); }catch(e){ return undefined; } }
   var EIQ=G('EIQ')||null, EIQGROUP=G('EIQGROUP')||null,
       GROUP=G('GROUP')||null, BR=G('BR')||null, TR=G('TR')||{}, ESGX=G('ESGX')||null;
+  var ASOF=G('DASH_ASOF')||null;
 
   var hasEiq = !!(EIQ && Object.keys(EIQ).length);
   var hasEp  = !!(GROUP && BR && Object.keys(BR).length);
@@ -27,6 +28,7 @@
     '.dk-head h2{font-size:19px;margin:0;letter-spacing:-.01em}',
     '.dk-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--hover);padding:3px 9px;border-radius:20px}',
     '.dk-sub{color:var(--muted);font-size:13px;margin:0 0 18px}',
+    '.dk-asof{font-size:11.5px;color:var(--faint);margin:-10px 0 16px;line-height:1.5}',
     '.dk-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:13px;margin-bottom:20px}',
     '.dk-kpi{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 16px}',
     '.dk-kpi .l{font-size:12px;color:var(--muted);font-weight:550}',
@@ -123,7 +125,7 @@
   }
 
   function head(title,sub){
-    return '<div class="dk-head"><h2>'+title+'</h2><span class="dk-badge">'+brandName()+'</span><span class="dk-badge" style="color:var(--muted);background:var(--panel2)">Source: '+SRC[DS.source].label+'</span></div><p class="dk-sub">'+(sub||'')+'</p>';
+    return '<div class="dk-head"><h2>'+title+'</h2><span class="dk-badge">'+brandName()+'</span><span class="dk-badge" style="color:var(--muted);background:var(--panel2)">Source: '+SRC[DS.source].label+'</span></div><p class="dk-sub">'+(sub||'')+'</p>'+'<p class="dk-asof">'+(ASOF?'Data as of <b>'+ASOF+'</b> · ':'')+'say <b>&ldquo;refresh my dashboard from EIQ&rdquo;</b> for current numbers</p>';
   }
   function emptyBrand(ws,title,msg){ ws.innerHTML='<div class="dk-empty"><div class="i">◔</div><h3>'+title+'</h3><p>'+msg+'</p></div>'; }
 
