@@ -55,6 +55,7 @@ To populate it for a client, when they ask to "refresh my dashboard from EIQ":
    - `EIQGROUP` — `{ brands:[[key,label,lifetimeAUD,customers,color]], totalCust, totalLtv }` (consolidated roll-up).
    - Money is settled AUD from customer-analytics; where a tenant's `last_month.aud_total` is 0 because FX hasn't synced, set `lastMonth:0` (the engine shows an order count instead of a misleading $0). Keep `totalLtv` equal to the sum of the per-tenant bars.
    - An optional legacy `EP v1` source is supported via `GROUP`/`BR`/`TR`/`ESGX` globals; omit them unless the client explicitly has that dataset.
+   - **Stamp the freshness.** Also inject `var DASH_ASOF='<D Mon YYYY>';` (the date you pulled the data — e.g. `'11 Aug 2026'`) so every Dashboard view shows a "Data as of …" line plus the "say 'refresh my dashboard from EIQ' for current numbers" hint. Update it each time you refresh.
 3. Sections appear only where the data exists — the engine derives the brand list and section list from what you inject. Validate (below), then deliver.
 
 **Data safety — non-negotiable.** Real client figures, customer names and emails live **only** in the client's delivered artifact, never in this plugin repo. Never commit populated data globals, a filled-in `console_dash.html`, or any client numbers back to the marketplace repo. The repo template must always ship with the empty-state Dashboard and zero client data.
