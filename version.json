@@ -1,6 +1,6 @@
 {
-  "version": "0.3.0",
-  "released": "2026-08-10",
-  "notes": "New: Business Brain + Train & Improve workflows, safe-by-default guardrails, and an in-dashboard update check. Say “rebuild my console” to update.",
+  "version": "0.4.0",
+  "released": "2026-08-11",
+  "notes": "New: a live Dashboard tab — revenue, customers, finance & P&L, sales pipeline, subscriptions, royalties and website traffic, built connector-driven from your EIQ tenants with a consolidated Group view. Say “refresh my dashboard from EIQ” to populate it.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }
