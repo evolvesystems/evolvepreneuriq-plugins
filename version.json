@@ -1,6 +1,6 @@
 {
-  "version": "0.4.2",
+  "version": "0.4.3",
   "released": "2026-08-11",
-  "notes": "Fix: “rebuild my console” now reliably fetches the newest template from the CDN (a wrong path meant rebuilds silently used the older bundled copy). Combined with the persistent update prompt from 0.4.1, updates now flow to a rebuild without needing a restart.",
+  "notes": "Dashboard now shows how fresh it is: every view carries a “Data as of <date>” stamp plus a reminder to say “refresh my dashboard from EIQ” for current numbers — so the snapshot's age and the refresh command are visible right on the page.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

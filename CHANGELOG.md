@@ -2,6 +2,14 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.3 — 2026-08-11
+
+### Added
+- **Freshness on the Dashboard.** Every Dashboard view now carries a **"Data as of &lt;date&gt;"**
+  stamp plus a reminder to say **"refresh my dashboard from EIQ"** for current numbers. The date is
+  set when the data is pulled (a `DASH_ASOF` value), so the snapshot's age and the refresh command
+  are visible right on the page — no need to remember either.
+
 ## v0.4.2 — 2026-08-11
 
 ### Fixed
