@@ -2,6 +2,16 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.1 — 2026-08-11
+
+### Added
+- **Persistent update prompt.** When a newer version is published, the console now shows a
+  dismissable **"Update ready"** bar (bottom-right) as well as the amber version pill, and it
+  **re-checks the version feed while open** — every 20 minutes and whenever the tab is refocused —
+  so an update that ships mid-session still surfaces. Both the bar and the pill open a card with
+  the release notes and the exact steps to apply (sync → restart → rebuild → refresh). Dismissing
+  the bar hides it until a *newer* version appears.
+
 ## v0.4.0 — 2026-08-11
 
 ### Added
