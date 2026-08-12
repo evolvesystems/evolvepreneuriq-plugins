@@ -77,8 +77,8 @@
   /* ---- brand list derived from the data that's actually present ---- */
   function brandMeta(k){ var d=(EIQ&&EIQ[k])||(BR&&BR[k]); return { name:(d&&d.name)||k, color:(d&&d.color)||'#6d28d9' }; }
   function brandKeys(source){
-    if(source==='eiq') return EIQ?Object.keys(EIQ):[];
-    return BR?Object.keys(BR):[];
+    if(source==='eiq') return EIQ?Object.keys(EIQ).filter(function(k){return k!=='group';}):[];
+    return BR?Object.keys(BR).filter(function(k){return k!=='group';}):[];
   }
   function brandList(){
     var ks=brandKeys(DS.source), out=[['group','Group — all brands','#6d28d9']];

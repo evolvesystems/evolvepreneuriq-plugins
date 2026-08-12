@@ -166,7 +166,7 @@ const CONFIG={
   businessName:'Your Business',                 // active business shown in the header
   businesses:['Your Business'],                 // switcher list — one per connected tenant
   site:'https://evolvepreneuriq.app',
-  version:'0.4.3',
+  version:'0.4.4',
   updatesUrl:'https://github.com/evolvesystems/evolvepreneuriq-plugins',  // where 'check for updates' points
   updatesFeed:'https://cdn.jsdelivr.net/gh/evolvesystems/evolvepreneuriq-plugins@main/version.json', // polled on load; shows 'update available' if newer
   sections:[                                     // top-nav shortcuts → generic platform paths
@@ -984,8 +984,8 @@ renderMenu();
   /* ---- brand list derived from the data that's actually present ---- */
   function brandMeta(k){ var d=(EIQ&&EIQ[k])||(BR&&BR[k]); return { name:(d&&d.name)||k, color:(d&&d.color)||'#6d28d9' }; }
   function brandKeys(source){
-    if(source==='eiq') return EIQ?Object.keys(EIQ):[];
-    return BR?Object.keys(BR):[];
+    if(source==='eiq') return EIQ?Object.keys(EIQ).filter(function(k){return k!=='group';}):[];
+    return BR?Object.keys(BR).filter(function(k){return k!=='group';}):[];
   }
   function brandList(){
     var ks=brandKeys(DS.source), out=[['group','Group — all brands','#6d28d9']];
