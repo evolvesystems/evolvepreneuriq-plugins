@@ -1,6 +1,6 @@
 {
-  "version": "0.4.3",
+  "version": "0.4.4",
   "released": "2026-08-11",
-  "notes": "Dashboard now shows how fresh it is: every view carries a “Data as of <date>” stamp plus a reminder to say “refresh my dashboard from EIQ” for current numbers — so the snapshot's age and the refresh command are visible right on the page.",
+  "notes": "The legacy EP v1 source now appears automatically when the connector has an EP v1 store database attached — the refresh detects it rather than assuming. Also fixes a duplicate “Group” row when a data source carries its own group key.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

@@ -2,6 +2,17 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.4 — 2026-08-11
+
+### Changed
+- **EP v1 is now connector-detected.** The dashboard's optional legacy EP v1 source (the EPCLUB
+  store database) is included automatically when the EiQ connector has that store DB attached — the
+  refresh checks for it rather than assuming. Tenants without it simply see EiQ only.
+
+### Fixed
+- Removed a duplicate **"Group"** row that appeared when a data source carried its own `group` key;
+  `group` is now reserved for the consolidated view.
+
 ## v0.4.3 — 2026-08-11
 
 ### Added
