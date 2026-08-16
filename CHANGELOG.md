@@ -2,6 +2,16 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.8 — 2026-08-16
+
+### Fixed
+- **Dashboard showed "not built yet" inside a persisted Cowork artifact, even with data injected.**
+  The engine was reading its `EIQ`/`EIQGROUP`/`GROUP`/`BR`/`TR`/`ESGX` data globals with `eval()`.
+  Artifact viewers run under a Content-Security-Policy that blocks `eval`, so the lookup silently
+  failed there (while working fine in a plain downloaded/previewed file), making a fully-populated
+  console look empty. The engine now reads these globals directly off `window` instead — no `eval`
+  anywhere in the dashboard tab.
+
 ## v0.4.7 — 2026-08-16
 
 ### Fixed

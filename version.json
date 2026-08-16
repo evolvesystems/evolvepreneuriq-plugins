@@ -1,6 +1,6 @@
 {
-  "version": "0.4.7",
+  "version": "0.4.8",
   "released": "2026-08-16",
-  "notes": "Hardens the Dashboard against incomplete data from a live refresh: missing or malformed figures now degrade gracefully (fall back to the next-best KPI, or show —) instead of crashing the tab or printing $NaN.",
+  "notes": "Fixes the Dashboard tab showing 'not built yet' inside a persisted Cowork artifact even when data was injected. The engine was reading its data globals via eval(), which artifact viewers block under CSP; it now reads them directly off window instead.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }
