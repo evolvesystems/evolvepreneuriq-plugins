@@ -7,8 +7,12 @@
 (function(){
   if(window.__dashInit) return; window.__dashInit=true;
 
-  /* read possibly-undefined globals without throwing */
-  function G(n){ try{ return (0,eval)(n); }catch(e){ return undefined; } }
+  /* read possibly-undefined globals without throwing. Uses window[n] rather than
+     eval — persisted artifacts run under a CSP that blocks eval/Function, and an
+     eval-based lookup silently returns undefined there, making the tab look like
+     no data was ever injected even when it was. Top-level `var X=...` in a classic
+     script is a property of window, so this reads the exact same values safely. */
+  function G(n){ try{ return window[n]; }catch(e){ return undefined; } }
   var EIQ=G('EIQ')||null, EIQGROUP=G('EIQGROUP')||null,
       GROUP=G('GROUP')||null, BR=G('BR')||null, TR=G('TR')||{}, ESGX=G('ESGX')||null;
   var ASOF=G('DASH_ASOF')||null;
