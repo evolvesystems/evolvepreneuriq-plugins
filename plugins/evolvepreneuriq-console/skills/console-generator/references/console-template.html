@@ -920,6 +920,73 @@ renderMenu();
       GROUP=G('GROUP')||null, BR=G('BR')||null, TR=G('TR')||{}, ESGX=G('ESGX')||null;
   var ASOF=G('DASH_ASOF')||null;
 
+  /* ---- defensive helpers: the generator is expected to inject the full   ---- */
+  /* ---- documented schema, but a live data pull can come back partial —   ---- */
+  /* ---- never let a missing/odd field crash the tab or print "$NaN".      ---- */
+  function numOr(v,d){ v=Number(v); return isFinite(v)?v:d; }
+  function arrOr(v,d){ return Array.isArray(v)?v:d; }
+  function pct(n,d){ n=Number(n); d=Number(d); return (isFinite(n)&&isFinite(d)&&d>0)?Math.round(100*n/d):0; }
+  function safeDiv(n,d,fallback){ n=Number(n); d=Number(d); return (isFinite(n)&&isFinite(d)&&d>0)?(n/d):(fallback||0); }
+
+  /* normalize one EIQ tenant record in place — fills gaps, and demotes a   */
+  /* "has.X" flag to false if the figures needed to render X aren't usable, */
+  /* so the UI falls back to the next-best KPI instead of crashing/NaN.     */
+  function normEiqBrand(d){
+    if(!d||typeof d!=='object') return d;
+    d.has = d.has||{};
+    var r = d.rev = d.rev||{};
+    var financeOk = !!(d.has.finance && d.finance && isFinite(Number(r.fyRev)) && isFinite(Number(r.fyNet))
+                        && arrOr(d.finance.revTop,[]).length && arrOr(d.finance.expTop,[]).length);
+    d.has.finance = financeOk;
+    r.fyRev=numOr(r.fyRev,0); r.fyExp=numOr(r.fyExp,0); r.fyNet=numOr(r.fyNet,0);
+    r.ytd=numOr(r.ytd,0); r.ytdOrders=numOr(r.ytdOrders,0);
+    r.lastMonth=numOr(r.lastMonth,0); r.lastMonthOrders=numOr(r.lastMonthOrders,0);
+    if(financeOk){ d.finance.revTop=arrOr(d.finance.revTop,[]); d.finance.expTop=arrOr(d.finance.expTop,[]); }
+
+    var c = d.cust = d.cust||{};
+    c.total=numOr(c.total,0); c.avgLtv=numOr(c.avgLtv,0); c.oneOff=numOr(c.oneOff,0);
+    c.oneOffPct=numOr(c.oneOffPct,0); c.totalLtv=numOr(c.totalLtv,0);
+    c.top = arrOr(c.top,[]).length?c.top:[['—',0,0]];
+    c.newByYear = (c.newByYear&&arrOr(c.newByYear.l,null))?c.newByYear:{l:[],v:[]};
+    c.nvr = (c.nvr&&arrOr(c.nvr.l,null))?c.nvr:{l:[],nw:[],rt:[]};
+    c.nvr.nw=arrOr(c.nvr.nw,[]); c.nvr.rt=arrOr(c.nvr.rt,[]); c.nvr.l=arrOr(c.nvr.l,[]);
+    c.ltvBuckets = (c.ltvBuckets&&arrOr(c.ltvBuckets.l,null))?c.ltvBuckets:{l:[],v:[]};
+    c.ordBuckets = (c.ordBuckets&&arrOr(c.ordBuckets.l,null))?c.ordBuckets:{l:[],v:[]};
+
+    d.has.pipeline = !!(d.has.pipeline && d.pipeline && arrOr(d.pipeline.stages,[]).length && isFinite(Number(d.pipeline.total)));
+    if(d.has.pipeline){ var dl=d.pipeline; dl.total=numOr(dl.total,0); dl.pipelineValue=numOr(dl.pipelineValue,0); dl.openValue=numOr(dl.openValue,0); dl.openCount=numOr(dl.openCount,0); dl.wonValue=numOr(dl.wonValue,0); dl.lostValue=numOr(dl.lostValue,0); dl.winRateVal=numOr(dl.winRateVal,0); dl.stages=arrOr(dl.stages,[]); }
+
+    d.has.subs = !!(d.has.subs && d.subs && numOr(d.subs.active,0)>0 && isFinite(Number(d.subs.mrr)));
+    if(d.has.subs){ var su=d.subs; su.active=numOr(su.active,0); su.mrr=numOr(su.mrr,0); su.ccy=su.ccy||'AUD'; su.churn=numOr(su.churn,0); }
+
+    d.has.royalties = !!(d.has.royalties && d.roy && arrOr(d.roy.platforms,[]).length && isFinite(Number(d.roy.gross)));
+    if(d.has.royalties){ var ro=d.roy; ro.gross=numOr(ro.gross,0); ro.supplier=numOr(ro.supplier,0); ro.units=numOr(ro.units,0); ro.txns=numOr(ro.txns,0); ro.payTotal=numOr(ro.payTotal,0); ro.payCount=numOr(ro.payCount,0); ro.platforms=arrOr(ro.platforms,[]); }
+    return d;
+  }
+  function normTraffic(t){
+    if(!t||!arrOr(t.ch,[]).length||!arrOr(t.pages,[]).length) return null;
+    t.visits=numOr(t.visits,0); t.unique=numOr(t.unique,0); t.bounce=numOr(t.bounce,0); t.dur=numOr(t.dur,0); t.ret=numOr(t.ret,0);
+    return t;
+  }
+  function normEpBrand(b){
+    if(!b||typeof b!=='object'||b.empty) return b;
+    b.k = b.k||{};
+    ['rev','rev12','orders','cust','members','new12','enrol','courses','books','recur'].forEach(function(f){ b.k[f]=numOr(b.k[f],0); });
+    b.annual = (b.annual&&arrOr(b.annual.l,null))?b.annual:{l:[],v:[]};
+    b.monthly = (b.monthly&&arrOr(b.monthly.l,null))?b.monthly:{l:[],v:[]};
+    b.customers = arrOr(b.customers,[]).length?b.customers:[['—','—',0,0]];
+    b.color = b.color||'#6d28d9';
+    return b;
+  }
+  if(EIQ) Object.keys(EIQ).forEach(function(k){ if(k!=='group') normEiqBrand(EIQ[k]); });
+  if(TR) Object.keys(TR).forEach(function(k){ TR[k]=normTraffic(TR[k]); });
+  if(BR) Object.keys(BR).forEach(function(k){ if(k!=='group') normEpBrand(BR[k]); });
+  if(EIQGROUP){ EIQGROUP.totalCust=numOr(EIQGROUP.totalCust,0); EIQGROUP.totalLtv=numOr(EIQGROUP.totalLtv,0); EIQGROUP.brands=arrOr(EIQGROUP.brands,[]); }
+  if(GROUP){
+    ['rev','orders','cust','members','visits','rev12'].forEach(function(f){ GROUP[f]=numOr(GROUP[f],0); });
+    GROUP.labels=arrOr(GROUP.labels,[]); GROUP.revLife=arrOr(GROUP.revLife,[]); GROUP.colors=arrOr(GROUP.colors,[]); GROUP.visits12=arrOr(GROUP.visits12,[]);
+  }
+
   var hasEiq = !!(EIQ && Object.keys(EIQ).length);
   var hasEp  = !!(GROUP && BR && Object.keys(BR).length);
 
@@ -971,9 +1038,9 @@ renderMenu();
   ].join(''); document.head.appendChild(css);
 
   /* ---- helpers ---- */
-  function money(n){return '$'+Math.round(n).toLocaleString();}
-  function moneyK(n){return Math.abs(n)>=1000?'$'+(n/1000).toFixed(Math.abs(n)>=100000?0:1)+'k':'$'+Math.round(n);}
-  function num(n){return Number(n).toLocaleString();}
+  function money(n){ n=Number(n); return isFinite(n)?('$'+Math.round(n).toLocaleString()):'—'; }
+  function moneyK(n){ n=Number(n); if(!isFinite(n))return '—'; return Math.abs(n)>=1000?'$'+(n/1000).toFixed(Math.abs(n)>=100000?0:1)+'k':'$'+Math.round(n); }
+  function num(n){ n=Number(n); return isFinite(n)?n.toLocaleString():'—'; }
   function kpi(l,v,f,acc){return '<div class="dk-kpi'+(acc?' acc':'')+'"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+(f?'<div class="f">'+f+'</div>':'')+'</div>';}
   function kpiNeg(l,v,f){return '<div class="dk-kpi neg"><div class="l">'+l+'</div><div class="v">'+v+'</div>'+(f?'<div class="f">'+f+'</div>':'')+'</div>';}
   function tc(){var s=getComputedStyle(document.body);return{m:s.getPropertyValue('--muted').trim(),g:s.getPropertyValue('--line').trim()};}
@@ -1039,14 +1106,18 @@ renderMenu();
   function renderDashBody(){
     var ws=document.getElementById('workspace'); if(!ws)return; ws.className='right dk';
     document.documentElement.style.setProperty('--accent', brandColor());
-    if(DS.source==='eiq'){
-      if(DS.brand==='group'){ renderEiqGroup(ws); return; }
-      if(!EIQ[DS.brand]){ emptyBrand(ws, brandName()+' — no EiQ data', 'This tenant’s connector hasn’t been pulled into this view. Ask me to “refresh my dashboard from EIQ” for this tenant.'); return; }
-      renderEiqBrand(ws, DS.brand, DS.section); return;
+    try{
+      if(DS.source==='eiq'){
+        if(DS.brand==='group'){ renderEiqGroup(ws); return; }
+        if(!EIQ[DS.brand]){ emptyBrand(ws, brandName()+' — no EiQ data', 'This tenant’s connector hasn’t been pulled into this view. Ask me to “refresh my dashboard from EIQ” for this tenant.'); return; }
+        renderEiqBrand(ws, DS.brand, DS.section); return;
+      }
+      if(DS.brand==='group'){ renderEpGroup(ws); return; }
+      if(!BR[DS.brand]||BR[DS.brand].empty){ emptyBrand(ws,brandName()+' — no data','No EP v1 data source connected for this brand yet.'); return; }
+      renderEpBrand(ws, DS.section);
+    }catch(e){
+      emptyBrand(ws,'Couldn’t render this view','This section’s data came back in a shape I didn’t expect, so I stopped rather than show something wrong. Ask me to “refresh my dashboard from EIQ” to re-pull it, or try a different business/section from the menu.'+(window.console?(console.error('Dashboard render error:',e),''):''));
     }
-    if(DS.brand==='group'){ renderEpGroup(ws); return; }
-    if(!BR[DS.brand]||BR[DS.brand].empty){ emptyBrand(ws,brandName()+' — no data','No EP v1 data source connected for this brand yet.'); return; }
-    renderEpBrand(ws, DS.section);
   }
 
   /* =================== EiQ — Group =================== */
@@ -1058,8 +1129,8 @@ renderMenu();
       '<div class="dk-kpis">'+
         kpi('Lifetime revenue (settled)',money(g.totalLtv),g.brands.length+' live tenant(s)',1)+
         kpi('Customers',num(g.totalCust))+
-        kpi('Biggest tenant',top[1],money(top[2])+' · '+(top[2]/g.totalLtv*100).toFixed(0)+'%')+
-        kpi('Avg lifetime / customer',money(g.totalLtv/g.totalCust))+
+        kpi('Biggest tenant',top[1],money(top[2])+' · '+pct(top[2],g.totalLtv)+'%')+
+        kpi('Avg lifetime / customer',money(safeDiv(g.totalLtv,g.totalCust)))+
       '</div>'+
       '<div class="dk-g2">'+
         '<div class="dk-card"><h3>Lifetime revenue by tenant</h3><div class="hint">Settled AUD</div><div class="dk-cw t"><canvas id="dc1"></canvas></div></div>'+
@@ -1107,7 +1178,7 @@ renderMenu();
       chart('dc2',{type:'bar',data:{labels:c.ordBuckets.l,datasets:[{data:c.ordBuckets.v,backgroundColor:d.color,borderRadius:4}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:function(x){return num(x.raw)+' customers';}}}},scales:{y:A.grid,x:A.no}}});
     }
     else if(s==='customers'){
-      var top=c.top[0], share=(top[2]/c.totalLtv*100);
+      var top=c.top[0], share=pct(top[2],c.totalLtv);
       ws.innerHTML=head('Customers & LTV','Lifetime value across this tenant (settled AUD, completed orders).')+
         '<div class="dk-kpis">'+
           kpi('Customers',num(c.total),null,1)+ kpi('Avg lifetime value',money(c.avgLtv))+
@@ -1131,7 +1202,7 @@ renderMenu();
       var r=d.roy, plat=r.platforms.slice().sort(function(a,b){return b[1]-a[1];}), top=plat[0];
       ws.innerHTML=head('Royalties & Books','Book royalty sales across every distribution platform.')+
         '<div class="dk-kpis">'+kpi('Gross royalty sales',money(r.gross),num(r.txns)+' transactions',1)+kpi('Units sold',num(r.units))+kpi('Author royalties',money(r.supplier))+kpi('Royalty payments',money(r.payTotal),r.payCount+' runs')+kpi('Platforms',plat.length+'')+'</div>'+
-        '<div class="dk-note">Top platform: <b>'+top[0]+'</b> — '+money(top[1])+' gross ('+(top[1]/r.gross*100).toFixed(0)+'% of the total) and '+num(top[2])+' units.</div>'+
+        '<div class="dk-note">Top platform: <b>'+top[0]+'</b> — '+money(top[1])+' gross ('+pct(top[1],r.gross)+'% of the total) and '+num(top[2])+' units.</div>'+
         '<div class="dk-g2">'+
           '<div class="dk-card"><h3>Gross sales by platform</h3><div class="hint">All-time</div><div class="dk-cw t"><canvas id="dc1"></canvas></div></div>'+
           '<div class="dk-card"><h3>Units by platform</h3><div class="hint">All-time</div><div class="dk-cw t"><canvas id="dc2"></canvas></div></div>'+
@@ -1184,7 +1255,7 @@ renderMenu();
       '<div class="dk-kpis">'+
         kpi('Website visits — 12 mo',num(t.visits),num(t.unique)+' unique',1)+
         kpi('Bounce rate',t.bounce+'%','avg visit '+t.dur+'s')+
-        kpi('Returning visitors',num(t.ret),(100*t.ret/t.visits).toFixed(0)+'% of traffic')+
+        kpi('Returning visitors',num(t.ret),pct(t.ret,t.visits)+'% of traffic')+
         kpi('Top channel',t.ch[0][0],num(t.ch[0][1])+' visits')+
         (t.extra?kpi(t.extra[0],t.extra[1]):'')+
       '</div>'+
@@ -1221,7 +1292,7 @@ renderMenu();
       ws.innerHTML=head('Overview','Headline numbers for this brand.')+
         '<div class="dk-kpis">'+
           kpi('Lifetime paid revenue',money(b.k.rev),num(b.k.orders)+' paid orders',1)+
-          kpi('Paying customers',num(b.k.cust),'AOV '+money(b.k.rev/b.k.orders))+
+          kpi('Paying customers',num(b.k.cust),'AOV '+money(safeDiv(b.k.rev,b.k.orders)))+
           kpi('Registered members',num(b.k.members),num(b.k.new12)+' new in 12 mo')+
           kpi('Revenue — last 12 mo',money(b.k.rev12))+ kpi('Course enrolments',num(b.k.enrol),b.k.courses+' courses')+
           (b.k.books?kpi('Books in store',num(b.k.books)):kpi('Recurring revenue',money(b.k.recur)))+
@@ -1236,7 +1307,7 @@ renderMenu();
     }
     else if(id==='sales'){
       ws.innerHTML=head('Sales & Revenue','Revenue, orders and the products driving them.')+
-        '<div class="dk-kpis">'+kpi('Lifetime paid revenue',money(b.k.rev),null,1)+kpi('Revenue — last 12 mo',money(b.k.rev12))+kpi('Recurring revenue',money(b.k.recur))+kpi('Paid orders',num(b.k.orders))+kpi('Avg order value',money(b.k.rev/b.k.orders))+'</div>'+
+        '<div class="dk-kpis">'+kpi('Lifetime paid revenue',money(b.k.rev),null,1)+kpi('Revenue — last 12 mo',money(b.k.rev12))+kpi('Recurring revenue',money(b.k.recur))+kpi('Paid orders',num(b.k.orders))+kpi('Avg order value',money(safeDiv(b.k.rev,b.k.orders)))+'</div>'+
         '<div class="dk-card"><h3>Monthly revenue</h3><div class="hint">Paid orders</div><div class="dk-cw t"><canvas id="dc1"></canvas></div></div>'+
         (b.products?'<div class="dk-card"><h3>Top products by revenue</h3><div class="hint">All-time, paid orders</div><table><thead><tr><th>Product</th><th class="n">Orders</th><th class="n">Revenue</th></tr></thead><tbody>'+b.products.map(function(p){return '<tr><td>'+p[0]+'</td><td class="n">'+num(p[1])+'</td><td class="n">'+money(p[2])+'</td></tr>';}).join('')+'</tbody></table></div>':'');
       A=axes();
@@ -1244,15 +1315,15 @@ renderMenu();
     }
     else if(id==='members'){
       ws.innerHTML=head('Members & Courses','Registered members, courses and enrolments.')+
-        '<div class="dk-kpis">'+kpi('Registered members',num(b.k.members),null,1)+kpi('New members — 12 mo',num(b.k.new12))+kpi('Courses',num(b.k.courses))+kpi('Enrolments',num(b.k.enrol))+kpi('Enrolments / member',(b.k.enrol/b.k.members).toFixed(2))+'</div>'+
+        '<div class="dk-kpis">'+kpi('Registered members',num(b.k.members),null,1)+kpi('New members — 12 mo',num(b.k.new12))+kpi('Courses',num(b.k.courses))+kpi('Enrolments',num(b.k.enrol))+kpi('Enrolments / member',safeDiv(b.k.enrol,b.k.members).toFixed(2))+'</div>'+
         '<div class="dk-card"><h3>Audience &amp; learning</h3><div class="hint">Members, enrolments and courses (log scale)</div><div class="dk-cw"><canvas id="dc1"></canvas></div></div>';
       A=axes();
       chart('dc1',{type:'bar',data:{labels:['Members','Enrolments','Courses'],datasets:[{data:[b.k.members,b.k.enrol,b.k.courses],backgroundColor:[b.color,'#0d9488','#d97706'],borderRadius:5}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return num(c.raw);}}}},scales:{y:Object.assign({},A.grid,{type:'logarithmic'}),x:A.no}}});
     }
     else if(id==='customers'){
-      var top=b.customers[0], share=(top[3]/b.k.rev*100), t8=b.customers.reduce(function(a,c){return a+c[3];},0)/b.k.rev*100;
+      var top=b.customers[0], share=pct(top[3],b.k.rev), t8=pct(b.customers.reduce(function(a,c){return a+numOr(c[3],0);},0),b.k.rev);
       ws.innerHTML=head('Top Customers','Who spends the most on this brand.')+
-        '<div class="dk-kpis">'+kpi('Top customer',top[0].split(' ')[0]+'…',money(top[3]),1)+kpi("Top customer's share",share.toFixed(1)+'%')+kpi('Top 8 share',t8.toFixed(0)+'%')+kpi('Paying customers',num(b.k.cust))+kpi('Avg lifetime value',money(b.k.rev/b.k.cust))+'</div>'+
+        '<div class="dk-kpis">'+kpi('Top customer',(top[0]||'—').split(' ')[0]+'…',money(top[3]),1)+kpi("Top customer's share",share+'%')+kpi('Top 8 share',t8+'%')+kpi('Paying customers',num(b.k.cust))+kpi('Avg lifetime value',money(safeDiv(b.k.rev,b.k.cust)))+'</div>'+
         '<div class="dk-card"><h3>Top customers by lifetime spend</h3><div class="hint">Paid orders only</div><table><thead><tr><th>Customer</th><th>Country</th><th class="n">Orders</th><th class="n">Lifetime spend</th></tr></thead><tbody>'+
           b.customers.map(function(c){return '<tr><td>'+c[0]+'</td><td>'+c[1]+'</td><td class="n">'+num(c[2])+'</td><td class="n">'+money(c[3])+'</td></tr>';}).join('')+'</tbody></table></div>';
     }
