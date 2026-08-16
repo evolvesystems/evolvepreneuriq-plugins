@@ -2,6 +2,15 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.5 — 2026-08-16
+
+### Fixed
+- **EP v1 brand names and colors were leaking in from the EiQ source.** When a tenant used the
+  same key for both a client's EiQ connector and their legacy EP v1 record, the Dashboard's brand
+  list always showed the EiQ label — so switching to EP v1 didn't visually distinguish the two
+  data sources. Brand names and colors are now looked up from whichever source is currently
+  selected.
+
 ## v0.4.4 — 2026-08-11
 
 ### Changed
