@@ -75,7 +75,7 @@
   function chart(id,cfg){ if(typeof Chart==='undefined')return; kill(id); var el=document.getElementById(id); if(el)CH[id]=new Chart(el,cfg); }
 
   /* ---- brand list derived from the data that's actually present ---- */
-  function brandMeta(k){ var d=(EIQ&&EIQ[k])||(BR&&BR[k]); return { name:(d&&d.name)||k, color:(d&&d.color)||'#6d28d9' }; }
+  function brandMeta(k){ var d=DS.source==='eiq'?(EIQ&&EIQ[k]):(BR&&BR[k]); return { name:(d&&d.name)||k, color:(d&&d.color)||'#6d28d9' }; }
   function brandKeys(source){
     if(source==='eiq') return EIQ?Object.keys(EIQ).filter(function(k){return k!=='group';}):[];
     return BR?Object.keys(BR).filter(function(k){return k!=='group';}):[];
