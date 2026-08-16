@@ -1,6 +1,6 @@
 {
-  "version": "0.4.6",
+  "version": "0.4.7",
   "released": "2026-08-16",
-  "notes": "Adds quick slash commands: /rebuild, /refresh and /push-plugin, as shortcuts for the equivalent chat phrases.",
+  "notes": "Hardens the Dashboard against incomplete data from a live refresh: missing or malformed figures now degrade gracefully (fall back to the next-best KPI, or show —) instead of crashing the tab or printing $NaN.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

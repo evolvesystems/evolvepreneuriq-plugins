@@ -2,6 +2,17 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.7 — 2026-08-16
+
+### Fixed
+- **Dashboard crashes and `$NaN` on incomplete data.** If a live refresh pulled a figure that was
+  missing, `null`, or in an unexpected shape, the affected KPI could throw a JS error (blanking the
+  tab) or print a literal "$NaN". The engine now normalizes every tenant's data on load: a flag like
+  "has finance data" is only trusted if the numbers behind it are actually usable, so the UI falls
+  back to the next-best KPI (e.g. YTD revenue instead of FY P&L) instead of breaking. Every money/
+  percentage calculation is now division-by-zero and non-finite safe, and a last-resort guard shows
+  a friendly "couldn't render this view" message rather than a blank tab for anything unforeseen.
+
 ## v0.4.6 — 2026-08-16
 
 ### Added
