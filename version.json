@@ -1,6 +1,6 @@
 {
-  "version": "0.4.5",
+  "version": "0.4.6",
   "released": "2026-08-16",
-  "notes": "Fixes brand names and colors on the EP v1 source bleeding in from the EiQ source when a tenant used the same key in both — each source now shows its own labels.",
+  "notes": "Adds quick slash commands: /rebuild, /refresh and /push-plugin, as shortcuts for the equivalent chat phrases.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

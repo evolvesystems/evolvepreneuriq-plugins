@@ -72,6 +72,16 @@ The console is built from your **EIQ Manager** connector(s) — each connected b
 
 After installing and connecting, say **"set up my console"** in a chat. It confirms your businesses, sets up any automations you choose, and builds the console. Reopen it any time from your **Artifacts**, or say **"rebuild my console"** to refresh it from live EIQ data.
 
+### Quick commands
+
+Once the plugin is installed, these slash commands are shortcuts for the phrases above — type `/` in a chat to see them:
+
+| Command | Same as saying | What it does |
+|---|---|---|
+| `/rebuild` | "rebuild my console" | Re-applies the newest template and your settings; keeps existing Dashboard data as-is. |
+| `/refresh` | "refresh my dashboard from EIQ" | Pulls fresh numbers from every connected EIQ tenant and rebuilds the Dashboard. |
+| `/push-plugin` | "push the plugin to github" | Maintainer only — bumps the version and pushes changed plugin files to this repo. |
+
 ---
 
 ## Update, refresh & reconnect

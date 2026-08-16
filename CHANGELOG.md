@@ -2,6 +2,13 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.6 — 2026-08-16
+
+### Added
+- **Quick slash commands.** `/rebuild`, `/refresh` and `/push-plugin` now appear in the `/` menu once
+  the plugin is installed — shortcuts for "rebuild my console", "refresh my dashboard from EIQ",
+  and the maintainer's GitHub push flow, with no need to type the full phrase.
+
 ## v0.4.5 — 2026-08-16
 
 ### Fixed
