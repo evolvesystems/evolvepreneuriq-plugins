@@ -122,6 +122,17 @@ If a connector shows disconnected, or the EIQ Connector / Personas / data tabs s
 2. **Reconnect / re-authorise** it — sign in again through the popup (evolvepreneuriq.app). No keys to paste.
 3. Say **"rebuild my console"** to refresh from the reconnected data.
 
+### Troubleshooting
+
+**"Rebuild my console" fetches an old template, or images/CDN content won't load.**
+The generator pulls the newest template from `cdn.jsdelivr.net`. On a **Team or Enterprise** plan, an admin may need to allow that domain: **Admin settings -> Capabilities -> Network access**, add `cdn.jsdelivr.net` (and `raw.githubusercontent.com`, used for the version-check feed) to the allowlist. Without it, the fetch silently fails and the generator falls back to whatever template shipped with the installed plugin — which only updates after a sync **and** a restart, so a rebuild can look like it "didn't work."
+
+**A new slash command (e.g. `/refresh`) says "Unknown skill" even after Settings -> Plugins -> Sync.**
+A sync alone pulls new files into an already-installed plugin but doesn't always rebuild its command index. Uninstall the plugin, fully quit and reopen Claude, then reinstall it fresh from the marketplace — that forces the command list to rebuild.
+
+**The Dashboard tab says "not built yet" even right after "refresh my dashboard from EIQ."**
+Fixed in v0.4.8. Persisted Cowork artifacts run under a Content-Security-Policy that blocks `eval()`; the dashboard engine used to read its injected data with `eval`, so the lookup silently failed there even though the data was present — the tab looked empty in the artifact while working fine in a plain downloaded copy. The engine now reads its data directly off `window` instead. If you're still on an older version, update the plugin (see above) and rebuild.
+
 ---
 
 ## What's in this repo
