@@ -1,6 +1,6 @@
 {
-  "version": "0.4.9",
+  "version": "0.4.10",
   "released": "2026-08-20",
-  "notes": "Monthly revenue now comes from each tenant's own orders (not QuickBooks), shown as a bar chart with full history back to the first order, for every EiQ tenant — fixes charts that looked capped at ~24 months. Adds per-tenant 'data as of' freshness stamps, a one-click refresh link inside the Dashboard tab, a 'Connect another business' setup card, and a fix so finance/pipeline/subs/royalties detection never carries a stale flag forward in either direction.",
+  "notes": "Fixes the EiQ/EP v1 source switcher (and all EP v1 data) going invisible even when correctly populated: the legacy GROUP/BR/TR/ESGX globals must be declared with var, not const/let, so the dashboard engine's window-based lookup can see them. The console-generator skill now says so explicitly, to stop this recurring in future consoles.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

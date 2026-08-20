@@ -2,6 +2,21 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.10 — 2026-08-20
+
+### Fixed
+- **The legacy EP v1 source (and its EiQ/EP v1 switcher) could go completely invisible even when
+  correctly populated.** The v0.4.8 fix that reads dashboard data off `window` (to work around
+  artifact viewers blocking `eval`) only works for globals declared with `var` — a top-level
+  `const`/`let` in a classic script tag never attaches to `window`, so the lookup silently returned
+  `undefined`. If a client's `GROUP`/`BR`/`TR`/`ESGX` blocks were written with `const`, EP v1 data
+  was fully injected but the dashboard engine could never see it: no error, no switcher, EP v1
+  simply didn't exist as far as the page was concerned. `EIQ`/`EIQGROUP` happened to keep working
+  in the affected console because they were declared with `var`, which masked the problem.
+- The `console-generator` skill's data-injection instructions now say explicitly: every injected
+  dashboard global (`EIQ`, `EIQGROUP`, `GROUP`, `BR`, `TR`, `ESGX`, `DASH_ASOF`) must be declared
+  with `var`, never `const`/`let`, so this can't recur in a future console build.
+
 ## v0.4.9 — 2026-08-20
 
 ### Added
