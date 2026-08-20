@@ -1,6 +1,6 @@
 {
-  "version": "0.4.10",
+  "version": "0.4.12",
   "released": "2026-08-20",
-  "notes": "Fixes the EiQ/EP v1 source switcher (and all EP v1 data) going invisible even when correctly populated: the legacy GROUP/BR/TR/ESGX globals must be declared with var, not const/let, so the dashboard engine's window-based lookup can see them. The console-generator skill now says so explicitly, to stop this recurring in future consoles.",
+  "notes": "Royalties & Books is now much more detailed (gross vs. author royalty by year, units by year, per-platform table, top-titles table, approved/pending split). New Ops & Support section for EP v1 brands: ticket volume/department, contractor timesheet hours and pay, internal-task overdue rate.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }

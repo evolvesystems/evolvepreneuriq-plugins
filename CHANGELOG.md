@@ -2,6 +2,29 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.12 — 2026-08-20
+
+### Added
+- **Royalties & Books now shows a lot more than gross-by-year.** New KPI row (gross, author/supplier
+  royalty, publisher's share, approved vs. pending transactions), a gross-vs-author-royalty-by-year
+  chart, units-sold-by-year chart, a per-platform breakdown table (units/gross/author royalty), and
+  a top-titles-by-royalty table. The `console-generator` skill now pulls `eiq_royalty` summary/
+  by_platform plus a product-joined top-titles query for every EP v1 brand with royalty data.
+- **New "Ops & Support" section for EP v1 brands.** Support ticket volume by month, tickets by
+  department, contractor timesheet hours and pay, and an internal-task overdue rate — data the
+  connector already had (ticket/timesheet/task tables) but the dashboard never surfaced.
+
+## v0.4.11 — 2026-08-20
+
+### Fixed
+- **EP v1 course/enrolment counts included internal, non-course records.** The legacy platform's
+  `courses_course` table is a generic structured-content container, not just training courses —
+  it also holds internal staff training, sales proposals, launch blueprints, podcast guest
+  workflows and onboarding surveys. Counting every row overstated a tenant's course and enrolment
+  KPIs (one tenant showed 42 courses / 2,450 enrolments when only 30 / 2,188 were genuine
+  courses). The `console-generator` skill now excludes `STAFF:`, `PROPOSAL:`, and `BLUEPRINT:`
+  prefixed records before computing these KPIs for any EP v1 brand.
+
 ## v0.4.10 — 2026-08-20
 
 ### Fixed
