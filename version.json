@@ -1,6 +1,6 @@
 {
-  "version": "0.4.8",
-  "released": "2026-08-16",
-  "notes": "Fixes the Dashboard tab showing 'not built yet' inside a persisted Cowork artifact even when data was injected. The engine was reading its data globals via eval(), which artifact viewers block under CSP; it now reads them directly off window instead.",
+  "version": "0.4.9",
+  "released": "2026-08-20",
+  "notes": "Monthly revenue now comes from each tenant's own orders (not QuickBooks), shown as a bar chart with full history back to the first order, for every EiQ tenant — fixes charts that looked capped at ~24 months. Adds per-tenant 'data as of' freshness stamps, a one-click refresh link inside the Dashboard tab, a 'Connect another business' setup card, and a fix so finance/pipeline/subs/royalties detection never carries a stale flag forward in either direction.",
   "url": "https://github.com/evolvesystems/evolvepreneuriq-plugins"
 }
