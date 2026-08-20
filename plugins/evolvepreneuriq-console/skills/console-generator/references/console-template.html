@@ -166,7 +166,7 @@ const CONFIG={
   businessName:'Your Business',                 // active business shown in the header
   businesses:['Your Business'],                 // switcher list — one per connected tenant
   site:'https://evolvepreneuriq.app',
-  version:'0.4.4',
+  version:'0.4.9',                              // keep in lockstep with plugin.json's version on every release — this drives the in-console update pill/nag
   updatesUrl:'https://github.com/evolvesystems/evolvepreneuriq-plugins',  // where 'check for updates' points
   updatesFeed:'https://cdn.jsdelivr.net/gh/evolvesystems/evolvepreneuriq-plugins@main/version.json', // polled on load; shows 'update available' if newer
   sections:[                                     // top-nav shortcuts → generic platform paths
@@ -385,6 +385,10 @@ const ACTIONS = [
   {id:"persona",lane:"ops",title:"Adopt an EIQ persona",desc:"Work as a specialised EIQ VA (Sales Assistant, Leverage Audit...).",skill:"eiq-personas",brands:["all"],
    fields:{persona:txt("Which persona / goal","e.g. run the Brutal Leverage Audit")},
    template:v=>`Adopt the EIQ persona for: ${v.persona||"[persona or goal]"}. Fetch its system prompt from the skill library and work in that role (eiq-personas).`},
+
+  {id:"connect-business",lane:"ops",title:"Connect another business",desc:"Add a new EIQ tenant to this console — connector setup, then rebuild.",skill:"console-setup",brands:["all"],
+   fields:{biz:txt("Business name","e.g. the new brand or entity")},
+   template:v=>`Walk me through connecting a new EIQ business${v.biz?" ("+v.biz+")":""} to this console: adding the EIQ Manager connector for it in Settings → Connectors, then rebuilding the console once it's connected.`},
 
   /* BUSINESS BRAIN — the context files that make it sound like you and get smarter over time */
   {id:"brain-voice",lane:"brain",title:"Build my voice file",desc:"Turn 5–10 things you've written into a reusable style guide it follows every time.",skill:"brand-voice · human-voice-writer",brands:["all"],
@@ -1103,7 +1107,9 @@ renderMenu();
   }
 
   function head(title,sub){
-    return '<div class="dk-head"><h2>'+title+'</h2><span class="dk-badge">'+brandName()+'</span><span class="dk-badge" style="color:var(--muted);background:var(--panel2)">Source: '+SRC[DS.source].label+'</span></div><p class="dk-sub">'+(sub||'')+'</p>'+'<p class="dk-asof">'+(ASOF?'Data as of <b>'+ASOF+'</b> · ':'')+'say <b>&ldquo;refresh my dashboard from EIQ&rdquo;</b> for current numbers</p>';
+    var tenantAsof=(DS.source==='eiq' && DS.brand!=='group' && EIQ && EIQ[DS.brand] && EIQ[DS.brand].asOf) ? EIQ[DS.brand].asOf : null;
+    var asof=tenantAsof||ASOF;
+    return '<div class="dk-head"><h2>'+title+'</h2><span class="dk-badge">'+brandName()+'</span><span class="dk-badge" style="color:var(--muted);background:var(--panel2)">Source: '+SRC[DS.source].label+'</span></div><p class="dk-sub">'+(sub||'')+'</p>'+'<p class="dk-asof">'+(asof?'Data as of <b>'+asof+'</b> · ':'')+'say <a href="#" onclick="jump(\'flows\',\'dash-refresh\');return false;" style="color:var(--accent);font-weight:600">refresh my dashboard from EIQ</a> for current numbers</p>';
   }
   function emptyBrand(ws,title,msg){ ws.innerHTML='<div class="dk-empty"><div class="i">◔</div><h3>'+title+'</h3><p>'+msg+'</p></div>'; }
 
@@ -1307,7 +1313,7 @@ renderMenu();
         '</div>';
       A=axes();
       chart('dc1',{type:'bar',data:{labels:b.annual.l,datasets:[{data:b.annual.v,backgroundColor:b.color,borderRadius:5}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return money(c.raw);}}}},scales:{y:Object.assign({},A.grid,{ticks:Object.assign({},A.grid.ticks,{callback:moneyK})}),x:A.no}}});
-      chart('dc2',{type:'line',data:{labels:b.monthly.l,datasets:[{data:b.monthly.v,borderColor:b.color,backgroundColor:'transparent',tension:.3,pointRadius:0,borderWidth:2}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return money(c.raw);}}}},scales:{y:Object.assign({},A.grid,{ticks:Object.assign({},A.grid.ticks,{callback:moneyK})}),x:Object.assign({},A.no,{ticks:Object.assign({},A.no.ticks,{maxTicksLimit:8})})}}});
+      chart('dc2',{type:'bar',data:{labels:b.monthly.l,datasets:[{data:b.monthly.v,backgroundColor:b.color,borderRadius:3}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return money(c.raw);}}}},scales:{y:Object.assign({},A.grid,{ticks:Object.assign({},A.grid.ticks,{callback:moneyK})}),x:Object.assign({},A.no,{ticks:Object.assign({},A.no.ticks,{maxTicksLimit:8})})}}});
     }
     else if(id==='sales'){
       ws.innerHTML=head('Sales & Revenue','Revenue, orders and the products driving them.')+
