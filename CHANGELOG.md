@@ -2,6 +2,37 @@
 
 All notable changes to the **Evolvepreneur®iQ Workplace** plugin.
 
+## v0.4.9 — 2026-08-20
+
+### Added
+- **Monthly revenue, sourced from real orders — not QuickBooks.** The `finance` block (Finance &
+  P&L tab) still comes from QuickBooks `pnl`, but the monthly revenue trend and the headline
+  YTD/last-month KPIs are now built from each tenant's own `orders` table: real transaction
+  dates, real statuses, no currency-mixing. This works identically whether or not a tenant has
+  QuickBooks or formal invoicing connected, so every tenant with real sales gets a real trend —
+  including ones previously shown as having no finance data at all.
+- **Monthly revenue chart is now a bar chart with full history**, not a capped trailing window —
+  matching the existing "Annual paid revenue" chart's style and going back to each tenant's first
+  completed order (the pull is chunked by calendar year to stay under the connector's per-call
+  row cap).
+- **Per-tenant "data as of" stamps.** Each tenant's own refresh date now shows on its Dashboard
+  view, falling back to the console-wide date, so a partial refresh doesn't make the whole
+  console look uniformly fresh.
+- **One-click refresh link inside the Dashboard tab.** The "Data as of" line now includes a
+  clickable "refresh my dashboard from EIQ" link that jumps straight to the existing refresh
+  workflow card — no need to remember the phrase or hunt for the right tab.
+- **"Connect another business" workflow card**, for adding a new EIQ tenant to an existing
+  console without a full rebuild conversation.
+
+### Fixed
+- **Finance/pipeline/subscription/royalty detection could get stuck stale in either direction.**
+  Previously, once a tenant was marked as not having, say, finance data, that could persist even
+  after QuickBooks was connected later. Every refresh now re-derives each `has.*` flag fresh from
+  what the connectors actually return that pull, rather than trusting a prior refresh's value.
+- **Template version constant was out of step with the published plugin version**, which could
+  cause the in-console update indicator to misreport. It now tracks the plugin version on every
+  release.
+
 ## v0.4.8 — 2026-08-16
 
 ### Fixed
